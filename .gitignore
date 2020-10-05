@@ -1,0 +1,6 @@
+# moudules 
+node_modules
+package-lock.json
+
+# misc
+test/auth.js

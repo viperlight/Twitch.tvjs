@@ -1,0 +1,37 @@
+{
+    "env": {
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 12
+    },
+    "rules": {
+        "indent": ["error", 2],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "no-var": "warn",
+        "no-unused-vars": "error",
+        "valid-jsdoc": ["warn", {
+            "requireReturn": false,
+            "requireReturnDescription": false,
+            "preferType": {
+            "String": "string",
+            "Number": "number",
+            "Boolean": "boolean",
+            "Symbol": "symbol",
+            "function": "Function",
+            "object": "Object",
+            "date": "Date",
+            "error": "Error"
+            }
+        }],
+        "block-spacing": "error",
+        "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+        "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
+        "semi-spacing": "error",
+        "prefer-const": "error"
+    }
+}

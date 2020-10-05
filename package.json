@@ -1,0 +1,30 @@
+{
+  "name": "twitch.tvjs",
+  "version": "1.0.0",
+  "description": "twitch api client",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sunday-fun/Twitch.tvjs.git"
+  },
+  "keywords": [
+    "api",
+    "twitch",
+    "twitch-api"
+  ],
+  "author": "Wilbert-mad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sunday-fun/Twitch.tvjs/issues"
+  },
+  "homepage": "https://github.com/Sunday-fun/Twitch.tvjs#readme",
+  "devDependencies": {
+    "eslint": "^7.10.0"
+  },
+  "dependencies": {
+    "ws": "^7.3.1"
+  }
+}

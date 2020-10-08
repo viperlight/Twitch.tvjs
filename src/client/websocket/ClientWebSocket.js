@@ -50,6 +50,7 @@ class ClientWebSocket extends EventEmitter {
       this.socket.onopen = this.handleOpening.bind(this, ops);
       this.socket.onclose = this.handleClose.bind(this, ops);
       this.socket.onmessage = this.handleMessage.bind(this);
+      this.socket.onerror = this.handleError.bind(this, ops);
     } catch (error) {
       console.log(error);
       return error;
@@ -62,8 +63,6 @@ class ClientWebSocket extends EventEmitter {
     // identify client
     this.socket.send(`PASS ${ops.password}`);
     this.socket.send(`NICK ${ops.username}`);
-
-    this.client.emit(Events.CLIENT_READY);
   } 
 
   handleClose(ops) {
@@ -76,9 +75,19 @@ class ClientWebSocket extends EventEmitter {
     this.socket = null;
   }
 
+  handleError(ops) {
+    this.client.emit(Events.CLIENT_DISCONNECT);
+
+    if (this.client.reconnect) {
+      this.client.emit(Events.CLIENT_RECONNECTING);
+      setTimeout(() => { this.connect(ops); }, 2000);
+    }
+    this.socket = null;
+  }
+
   handleMessage(event) {
-    console.log(Math.random());
     const pockets = event.data.slice('\r\n');
+    this.client.emit('raw', pockets);
     MessageHandlers(Utils.msg(pockets), this);
   }
 }

@@ -31,14 +31,28 @@ class Client extends EventEmitter {
 
     /**
      * User that the client is logged in as
-     * @type {?ClientUser}
+     * @type {?string}
      */
-    this.user = null;
+    this.username = null;
 
     /**
      * @private
      */
     this.ws = new ClientWebSocket(this);
+
+    /**
+     * whether or not the client is ready
+     * @type {boolean}
+     * @public
+     */
+    this.ready = false;
+
+    /**
+     * The time the client was ready at
+     * @type {number}
+     * @public
+     */
+    this.readyAt = null;
   }
   
   /**
@@ -55,6 +69,12 @@ class Client extends EventEmitter {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  join(channel) {
+    if (!channel || typeof channel !== 'string') 
+      throw new Error('INVALID_CHANNEL_TYPE');
+    channel = Utils.properChannel(channel);
   }
 }
 

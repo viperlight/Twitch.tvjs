@@ -6,7 +6,8 @@ class Utils {
   }
 
   /**
-   * 
+   * <info>Copyright (c) 2013-2015, Fionn Kelleher All rights reserved.
+   * @license {BSD-2-Clause} {@link https://github.com/sigkell/irc-message/blob/master/index.js}</info>
    * @param {string} data Mesasge string data 
    * @returns {message}
    */
@@ -16,89 +17,124 @@ class Utils {
       tags: {},
       prefix: null,
       command: null,
-      params: [],
+      params: []
     };
 
-    let posit = 0;
-    let spaceing = 0;
+    // position and nextspace are used by the parser as a reference.
+    let position = 0;
+    let nextspace = 0;
+
+    // The first thing we check for is IRCv3.2 message tags.
+    // http://ircv3.atheme.org/specification/message-tags-3.2
 
     if (data.charCodeAt(0) === 64) {
-      spaceing = data.indexOf(' ');
+      const nextspace = data.indexOf(' ');
 
-      if (spaceing === -1) return null;
-
-      const rawTags = data.slice(1, spaceing).split(';');
-
-      for (let i = 0; i < rawTags.length; i++) {
-        const tag = rawTags[i];
-        const pair = tag.split('=');
-        message.tags[pair[0]] = tag.substring(tag.indexOf('=') + 1) || true;
-      }
-
-      posit = spaceing + 1;
-    }
-
-    while (data.charCodeAt(posit) === 32) posit++;
-
-    if (data.charCodeAt(posit) === 58) {
-      spaceing = data.indexOf(' ', posit);
-
-      if (spaceing === -1) {
+      if (nextspace === -1) {
+        // Malformed IRC message.
         return null;
       }
 
-      message.prefix = data.slice(posit + 1, spaceing);
-      posit = spaceing + 1;
+      // Tags are split by a semi colon.
+      const rawTags = data.slice(1, nextspace).split(';');
 
-      while (data.charCodeAt(posit) === 32) {
-        posit++;
+      for (let i = 0; i < rawTags.length; i++) {
+        // Tags delimited by an equals sign are key=value tags.
+        // If there's no equals, we assign the tag a value of true.
+        const tag = rawTags[i];
+        const pair = tag.split('=');
+        message.tags[pair[0]] = pair[1] || true;
+      }
+
+      position = nextspace + 1;
+    }
+
+    // Skip any trailing whitespace.
+    while (data.charCodeAt(position) === 32) {
+      position++;
+    }
+
+    // Extract the message's prefix if present. Prefixes are prepended
+    // with a colon.
+
+    if (data.charCodeAt(position) === 58) {
+      nextspace = data.indexOf(' ', position);
+
+      // If there's nothing after the prefix, deem this message to be
+      // malformed.
+      if (nextspace === -1) {
+        // Malformed IRC message.
+        return null;
+      }
+
+      message.prefix = data.slice(position + 1, nextspace);
+      position = nextspace + 1;
+
+      // Skip any trailing whitespace.
+      while (data.charCodeAt(position) === 32) {
+        position++;
       }
     }
-    
-    spaceing = data.indexOf(' ', posit);
 
-    if (spaceing === -1) {
-      if (data.length > posit) {
-        message.command = data.slice(posit);
+    nextspace = data.indexOf(' ', position);
+
+    // If there's no more whitespace left, extract everything from the
+    // current position to the end of the string as the command.
+    if (nextspace === -1) {
+      if (data.length > position) {
+        message.command = data.slice(position);
         return message;
       }
 
       return null;
     }
 
-    message.command = data.slice(posit, spaceing);
+    // Else, the command is the current position up to the next space. After
+    // that, we expect some parameters.
+    message.command = data.slice(position, nextspace);
 
-    posit = spaceing + 1;
+    position = nextspace + 1;
 
-    while (data.charCodeAt(posit) === 32) {
-      posit++;
+    // Skip any trailing whitespace.
+    while (data.charCodeAt(position) === 32) {
+      position++;
     }
 
-    while (posit < data.length) {
-      spaceing = data.indexOf(' ', posit);
+    while (position < data.length) {
+      nextspace = data.indexOf(' ', position);
 
-      if (data.charCodeAt(posit) === 58) {
-        message.params.push(data.slice(posit + 1));
+      // If the character is a colon, we've got a trailing parameter.
+      // At this point, there are no extra params, so we push everything
+      // from after the colon to the end of the string, to the params array
+      // and break out of the loop.
+      if (data.charCodeAt(position) === 58) {
+        message.params.push(data.slice(position + 1));
         break;
       }
 
-      if (spaceing !== -1) {
-        message.params.push(data.slice(posit, spaceing));
-        posit = spaceing + 1;
+      // If we still have some whitespace...
+      if (nextspace !== -1) {
+        // Push whatever's between the current position and the next
+        // space to the params array.
+        message.params.push(data.slice(position, nextspace));
+        position = nextspace + 1;
 
-        while (data.charCodeAt(posit) === 32) {
-          posit++;
+        // Skip any trailing whitespace and continue looping.
+        while (data.charCodeAt(position) === 32) {
+          position++;
         }
 
         continue;
       }
 
-      if (spaceing === -1) {
-        message.params.push(data.slice(posit));
+      // If we don't have any more whitespace and the param isn't trailing,
+      // push everything remaining to the params array.
+      if (nextspace === -1) {
+        message.params.push(data.slice(position));
         break;
       }
     }
-  
+    
     return message;
   }
 
@@ -110,6 +146,10 @@ class Utils {
   static properChannel(str) {
     const channel = (str ? str : '').toLowerCase();
     return channel[0] === '#' ? channel : `#${channel}`;
+  }
+
+  static union(k, f) {
+    return [ ...new Set([ ...k, ...f ]) ];
   }
 }
 

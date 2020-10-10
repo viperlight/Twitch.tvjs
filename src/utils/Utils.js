@@ -151,6 +151,19 @@ class Utils {
   static union(k, f) {
     return [ ...new Set([ ...k, ...f ]) ];
   }
+
+  static wait(time) {
+    return new Promise((resolve) => setTimeout((resolve), time));
+  }
+
+  /**
+   * if a message is of type action
+   * @param {string} string message content
+   * @returns {boolean}
+   */
+  static Action(string) {
+    return string.match(/^\\u0001ACTION ([^\\u0001]+)\\u0001$/);
+  }
 }
 
 module.exports = Utils;

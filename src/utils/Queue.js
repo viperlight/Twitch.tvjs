@@ -4,6 +4,10 @@
  * Channel connector queue
  */
 class queue {
+  /**
+   * queue options
+   * @param {number} delay - delay time
+   */
   constructor(delay) {
     this.queue = [];
     this.index = 0;
@@ -21,10 +25,10 @@ class queue {
   
   /**
    * playes all the queue
-   * @param {number} index - 
+   * @param {?number} index - 
    */
   run(index) {
-    index === 0 && (this.index = index);
+    index || index === 0 && (this.index = index);
     this.play();
   }
 
@@ -32,7 +36,18 @@ class queue {
    * go thro all the queue
    * @returns {void}
    */
-  play() {}
+  play() {
+    const index = this.index++;
+    const atPoint = this.queue[index];
+    const next = this.queue[this.index];
+
+    if (!atPoint) return;
+
+    atPoint.fn();
+    next && setTimeout(() => {
+      this.next();
+    }, next.delay || this.delay);
+  }
 
   /**
    * resets the timer

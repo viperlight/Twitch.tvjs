@@ -21,7 +21,7 @@ class ClientWebSocket extends EventEmitter {
 
     /**
      * The WebSocket connection
-     * @type {WebSocket}
+     * @type {?WebSocket}
      */
     this.socket = null;
 
@@ -31,9 +31,14 @@ class ClientWebSocket extends EventEmitter {
     this.reconnect = false;
 
     /**
-     * @type {string}
+     * @type {?string}
      */
     this.reason = null;
+
+    /**
+     * @type {?setTimeout}
+     */
+    this.pingTimeout = null;
   }
 
   /**
@@ -47,10 +52,10 @@ class ClientWebSocket extends EventEmitter {
     try {
       this.socket = new ws(Constants.GATWAY(443));
 
-      this.socket.onopen = this.handleOpening.bind(this, ops);
-      this.socket.onclose = this.handleClose.bind(this, ops);
       this.socket.onmessage = this.handleMessage.bind(this);
       this.socket.onerror = this.handleError.bind(this, ops);
+      this.socket.onclose = this.handleClose.bind(this, ops);
+      this.socket.onopen = this.handleOpening.bind(this, ops);
     } catch (error) {
       console.log(error);
       return error;
@@ -59,10 +64,11 @@ class ClientWebSocket extends EventEmitter {
 
   handleOpening(ops) {
     if (this.socket == null || this.socket.readyState !== 1) return;
+    const user = ops.username || `justinfan${Math.floor((Math.random()*80000)+1000)}`;
     this.socket.send('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership');
     // identify client
     this.socket.send(`PASS ${ops.password}`);
-    this.socket.send(`NICK ${ops.username}`);
+    this.socket.send(`NICK ${user}`);
   } 
 
   handleClose(ops) {
@@ -86,9 +92,11 @@ class ClientWebSocket extends EventEmitter {
   }
 
   handleMessage(event) {
-    const pockets = event.data.slice('\r\n');
-    this.client.emit('raw', pockets);
-    MessageHandlers(Utils.msg(pockets), this);
+    const pockets = event.data.split('\r\n');
+    pockets.forEach(pocket => {
+      this.client.emit('raw', pocket);
+      MessageHandlers(Utils.msg(pocket), this);
+    });
   }
 }
 

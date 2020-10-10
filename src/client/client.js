@@ -1,8 +1,9 @@
 'use strict';
 
 const EventEmitter = require('events');
-const Utils = require('../utils/Utils.js');
-const ClientWebSocket = require('./websocket/ClientWebSocket.js');
+const Utils = require('../utils/Utils');
+const ClientWebSocket = require('./websocket/ClientWebSocket');
+const CommandManager = require('../utils/CommandManager');
 
 /**
  * Main key point for twitch api
@@ -26,8 +27,9 @@ class Client extends EventEmitter {
 
     /**
      * @type {string[]}
+     * @private
      */
-    this.channels = this.options.channels || [];
+    this._channels = this.options.channels || [];
 
     /**
      * User that the client is logged in as
@@ -36,6 +38,7 @@ class Client extends EventEmitter {
     this.username = null;
 
     /**
+     * @type {ClientWebSocket}
      * @private
      */
     this.ws = new ClientWebSocket(this);
@@ -48,11 +51,36 @@ class Client extends EventEmitter {
     this.ready = false;
 
     /**
-     * The time the client was ready at
+     * Client ping rate
      * @type {number}
      * @public
      */
+    this.currentLatency = 0;
+
+    /**
+     * @type {Date}
+     * @public
+     */
+    this.latency = new Date();
+
+    /**
+     * The time the client was ready at
+     * @type {?number}
+     * @public
+     */
     this.readyAt = null;
+
+    /**
+     * @type {CommandManager}
+     * @private
+     * @readonly
+     */
+    this._commands = new CommandManager(this);
+
+    // format all channels
+    this.options.channels.forEach((channel, index, array) => {
+      array[index] = Utils.properChannel(channel);
+    });
   }
   
   /**
@@ -71,10 +99,56 @@ class Client extends EventEmitter {
     }
   }
 
+  /**
+   * @private
+   * @returns {number}
+   */
+  get _time() {
+    if (this.currentLatency <= 600) return 600;
+    else return this.currentLatency + 100;
+  }
+
+  /**
+   * Client joins a channel for events/Actions
+   * @param {string} channel - channel name to join 
+   * @returns {Promise<void>}
+   */
   join(channel) {
     if (!channel || typeof channel !== 'string') 
       throw new Error('INVALID_CHANNEL_TYPE');
     channel = Utils.properChannel(channel);
+    // excute a join command for channel
+    return this._commands.send(null, null, `JOIN ${channel}`, (resolve, reject) => {
+      const eventName = 'voidJoin_0';
+      let hasFulfilled = false;
+      const listener = (err, joinedChannel) => {
+        if (channel === Utils.properChannel(joinedChannel)) {
+          // Received event target, resolve or reject
+          this.removeListener(eventName, listener);
+          hasFulfilled = true;
+          if (!err) resolve([channel]);
+          else reject(err);
+        }
+      };
+      this.on(eventName, listener);
+      // Race the Promise against a delay..
+      const delay = this._time;
+      Utils.wait(delay).then(() => {
+        if (!hasFulfilled) {
+          this.emit(eventName, 'No response from Twitch.', channel);
+        }
+      });
+    });
+
+  }
+
+  /**
+   * Channels the client was assigned to 
+   * @returns {string[]}
+   * @readonly
+   */
+  get channels() {
+    return this.options.channels || [];
   }
 }
 

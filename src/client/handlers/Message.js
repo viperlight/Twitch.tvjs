@@ -20,7 +20,13 @@ module.exports = function (message, WebSocket) {
 
   if (message.prefix === null) {
     switch (message.command) {
-    case 'PONG': break;
+    case 'PONG': {
+      const currDate = new Date();
+      WebSocket.client.currentLatency = (currDate.getTime() - WebSocket.client.latency.getTime()) / 1000;
+
+      clearTimeout(WebSocket.pingTimeout);
+      break;
+    }
     // send back in im still here response
     case 'PING': {
       if (WebSocket.socket !== null && WebSocket.socket.readyState === 1)
@@ -28,7 +34,7 @@ module.exports = function (message, WebSocket) {
       break;
     }
     default:
-      console.error(`Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`);
+      WebSocket.client.emit('error', `Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`);
       break;
     }
   } else if (message.prefix === 'tmi.twitch.tv') {
@@ -50,13 +56,13 @@ module.exports = function (message, WebSocket) {
     // connections set
     case '372': {
       WebSocket.sendLoop = setInterval(() => {
-        if (!WebSocket.socket !== null && WebSocket.socket.readyState === 1) 
+        if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) 
           WebSocket.socket.send('PING');
 
+        WebSocket.client.latency = new Date();
         WebSocket.pingTimeout = setTimeout(() => {
           if (WebSocket.socket !== null) {
-            this.WebSocket.close();
-
+            WebSocket.socket.close();
             clearInterval(WebSocket.sendLoop);
             clearTimeout(WebSocket.pingTimeout);
           }
@@ -64,49 +70,72 @@ module.exports = function (message, WebSocket) {
       }, 60000);
 
       const joinQueue = new Queue(2000);
-      const joinChannels = Utils.union(this.opts.channels, this.channels);
-      WebSocket.client.channels = [];
+      const joinChannels = Utils.union(WebSocket.client.options.channels, WebSocket.client._channels);
+      WebSocket.client._channels = [];
 
       for (let i = 0; i < joinChannels.length; i++) {
         const channel = joinChannels[i];
         joinQueue.add(() => {
-          if (!WebSocket.socket !== null && WebSocket.socket.readyState === 1)
-            WebSocket.client.join(channel);
+          if (WebSocket.socket !== null && WebSocket.socket.readyState === 1)
+            WebSocket.client.join(channel).catch(err => { console.log(err); });
         });
       }
 
       joinQueue.run();
       WebSocket.client.readyAt = Date.now();
       WebSocket.client.emit(Events.CLIENT_READY);
+      WebSocket.client.ready = true;
       break;
     }
+
+    // notice actions
     case 'NOTICE': {
       NoticeHandlers(message, message_id, content, channel, WebSocket);
-      // switch (message_id) {
-      // default: {
-      //   if (content.includes('Login unsuccessful') || content.includes('Login authentication failed')) {
-      //     WebSocket.client.reconnect = false;
-      //     WebSocket.reason = content;
-      //     WebSocket.socket.close();
-      //   } else if (content.includes('Error logging in') || content.includes('Improperly formatted auth')) {
-      //     WebSocket.client.reconnect = false;
-      //     WebSocket.reason = content;
-      //     WebSocket.socket.close();
-      //   } else if (content.includes('Invalid NICK')) {
-      //     WebSocket.client.reconnect = false;
-      //     WebSocket.reason = 'Invalid NICK.';
-      //     WebSocket.socket.close();
-      //   } else {
-      //     console.warn(`Could not parse NOTICE from tmi.twitch.tv:\n${JSON.stringify(message, null, 4)}`);
-      //   }
-      //   break;
-      // }
-      // }
       break;
     }
     
     default:
       break;
+    }
+  } else if (message.prefix === 'jtv') {
+    console.log('jtv event prefix');
+  } else {
+    switch (message.command) {
+    case '366':
+    case 'JOIN':
+    case '353':
+      break;
+    
+    // should be reseved on channel message
+    case 'PRIVMSG': {
+      // get user of message
+      message.tags.username = message.prefix.split('!')[0];
+
+      // eslint-disable-next-line no-prototype-builtins
+      if (message.tags.hasOwnProperty('bits')) {
+        const message_data = {
+          author: message.tags,
+          content: content,
+          channel,
+        };
+        WebSocket.client.emit('cheer', message_data);
+      // regular chat message
+      } else {
+        const message_data = {
+          author: message.tags,
+          content: content,
+          self: false,
+          channel,
+        };
+        WebSocket.client.emit('chat', message_data);
+      }
+      break;
+    }
+
+    default: {
+      WebSocket.client.emit('error', `Could not parse message:\n${JSON.stringify(message, null, 4)}`);
+      break;
+    }
     }
   }
 };

@@ -94,7 +94,7 @@ class ClientWebSocket extends EventEmitter {
   handleMessage(event) {
     const pockets = event.data.split('\r\n');
     pockets.forEach(pocket => {
-      this.client.emit('raw', pocket);
+      this.client.emit(Events.RAW, pocket);
       MessageHandlers(Utils.msg(pocket), this);
     });
   }

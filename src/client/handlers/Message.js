@@ -12,7 +12,7 @@ const NoticeHandlers = require('./NOTICE.js');
  */
 module.exports = function (message, WebSocket) {
   if (message === null) return;
-  WebSocket.client.emit('raw_message', message);
+  WebSocket.client.emit(Events.RAW_MESSAGE, message);
 
   const channel = message.params[0] || null;
   const content = message.params[1] || null;
@@ -34,7 +34,7 @@ module.exports = function (message, WebSocket) {
       break;
     }
     default:
-      WebSocket.client.emit('error', `Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`);
+      WebSocket.client.emit(Events.ERROR, `Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`);
       break;
     }
   } else if (message.prefix === 'tmi.twitch.tv') {
@@ -118,7 +118,7 @@ module.exports = function (message, WebSocket) {
           content: content,
           channel,
         };
-        WebSocket.client.emit('cheer', message_data);
+        WebSocket.client.emit(Events.CHEER_MEESSAGE, message_data);
       // regular chat message
       } else {
         const message_data = {
@@ -127,13 +127,13 @@ module.exports = function (message, WebSocket) {
           self: false,
           channel,
         };
-        WebSocket.client.emit('chat', message_data);
+        WebSocket.client.emit(Events.CHAT_MESSAGE, message_data);
       }
       break;
     }
 
     default: {
-      WebSocket.client.emit('error', `Could not parse message:\n${JSON.stringify(message, null, 4)}`);
+      WebSocket.client.emit(Events.ERROR, `Could not parse message:\n${JSON.stringify(message, null, 4)}`);
       break;
     }
     }

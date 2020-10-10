@@ -123,7 +123,7 @@ class Client extends EventEmitter {
       let hasFulfilled = false;
       const listener = (err, joinedChannel) => {
         if (channel === Utils.properChannel(joinedChannel)) {
-          // Received event target, resolve or reject
+          // received event target, resolve or reject
           this.removeListener(eventName, listener);
           hasFulfilled = true;
           if (!err) resolve([channel]);
@@ -131,11 +131,11 @@ class Client extends EventEmitter {
         }
       };
       this.on(eventName, listener);
-      // Race the Promise against a delay..
+      // race the Promise against a delay
       const delay = this._time;
       Utils.wait(delay).then(() => {
         if (!hasFulfilled) {
-          this.emit(eventName, 'No response from Twitch.', channel);
+          this.emit(eventName, 'No response from Twitch', channel);
         }
       });
     });

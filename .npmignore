@@ -1,0 +1,8 @@
+# modules 
+node_modules
+package-lock.json
+
+# NPM ignore
+test/
+.eslintrc.json
+.gitignore

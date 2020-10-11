@@ -1,16 +1,18 @@
 'use strict';
 
 const { Events } = require('../../utils/Constants');
-const Queue = require('../../utils/Queue.js');
-const Utils = require('../../utils/Utils.js');
-const NoticeHandlers = require('./NOTICE.js');
+const Queue = require('../../utils/Queue');
+const Utils = require('../../utils/Utils');
+const Message = require('../../structure/Message');
+const Channel = require('../../structure/Channel');
+const NoticeHandlers = require('./NOTICE');
 
 /**
  * manage message event
  * @param {message} message message data 
  * @param {ClientWebSocket} WebSocket Client socket inst
  */
-module.exports = function (message, WebSocket) {
+module.exports = function(message, WebSocket) {
   if (message === null) return;
   WebSocket.client.emit(Events.RAW_MESSAGE, message);
 
@@ -110,24 +112,20 @@ module.exports = function (message, WebSocket) {
     case 'PRIVMSG': {
       // get user of message
       message.tags.username = message.prefix.split('!')[0];
+      const channelClass = new Channel(WebSocket.client, channel);
 
       // eslint-disable-next-line no-prototype-builtins
       if (message.tags.hasOwnProperty('bits')) {
-        const message_data = {
-          author: message.tags,
-          content: content,
-          channel,
-        };
-        WebSocket.client.emit(Events.CHEER_MEESSAGE, message_data);
+        WebSocket.client.emit(
+          Events.CHEER_MEESSAGE, 
+          new Message(WebSocket.client, message.tags, channelClass, content)
+        );
       // regular chat message
       } else {
-        const message_data = {
-          author: message.tags,
-          content: content,
-          self: false,
-          channel,
-        };
-        WebSocket.client.emit(Events.CHAT_MESSAGE, message_data);
+        WebSocket.client.emit(
+          Events.CHAT_MESSAGE, 
+          new Message(WebSocket.client, message.tags, channelClass, content, false)
+        );
       }
       break;
     }

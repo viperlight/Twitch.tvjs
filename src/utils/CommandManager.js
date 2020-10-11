@@ -41,10 +41,22 @@ class CommandManager {
           // this.client.log.info(`Executing command: ${command}`);
           this.client.ws.socket.send(command);
         }
-        fn(resolve, reject);
+        if(fn && typeof fn === 'function') {
+          fn(resolve, reject);
+        } else {
+          resolve();
+        }
       } catch (err) {
         reject(err);
       }
+    });
+  }
+
+  action(channel, message) {
+    message = `\u0001ACTION ${message}\u0001`;
+
+    return this.send(this.client._time, channel, message, (resolve) => {
+      resolve();
     });
   }
 }

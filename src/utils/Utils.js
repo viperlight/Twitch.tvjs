@@ -1,5 +1,8 @@
 'use strict';
 
+const { Events } = require('./Constants');
+const Message = require('../structure/Message');
+
 class Utils {
   constructor() {
     throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
@@ -163,6 +166,50 @@ class Utils {
    */
   static Action(string) {
     return string.match(/^\\u0001ACTION ([^\\u0001]+)\\u0001$/);
+  }
+
+  /**
+   * send a message to twitch
+   * @param {Client} client - inst of client class
+   * @param {string} content - message its self
+   * @param {string} channel - message channel name
+   * @returns {Promise<void>}
+   */
+  static buildMessage(client, content, channel) {
+    return new Promise((resolve, reject) => {
+      try {
+        if (client.ws.socket == null || client.ws.socket.readyState !== 1) return;
+      
+        if (content.length >= 500) {
+          const msg = this.splitLine(content, 500);
+          console.log(msg);
+          content = msg[0];
+        
+          setTimeout(() => {
+            this.buildMessage(client, msg[1], channel);
+          }, 350);
+        }
+
+        client.ws.socket.send(`PRIVMSG ${channel} :${content}`);
+
+        client.emit(Events.CHAT_MESSAGE, new Message(client, client.username, channel, content, true));
+        // if (this.Action(content)) {} 
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * @param {string} str - split string
+   * @param {number} len - max langth
+   * @returns {string[]}
+   */
+  static splitLine(str, len) {
+    let lastSpace = str.substring(0, len).lastIndexOf(' ');
+    if (lastSpace === -1) lastSpace = len - 1;
+    return [str.substring(0, lastSpace), str.substring(lastSpace + 1)];
   }
 }
 

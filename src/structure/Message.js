@@ -24,7 +24,7 @@ class Message {
      * message channel
      * @type {string}
      */
-    this.channel = channel;
+    this.channel = client.channels.get(channel);
 
     /**
      * message content

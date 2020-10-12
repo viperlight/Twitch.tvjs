@@ -2,6 +2,9 @@
 
 module.exports = {
   Client: require('./client/client'),
-  Storage: require('./structure/Storage'),
   Utils: require('./utils/Utils'),
+  // Structure
+  Storage: require('./structure/Storage'),
+  Message: require('./structure/Message'),
+  Channel: require('./structure/Channel'),
 };

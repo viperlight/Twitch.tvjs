@@ -2,6 +2,7 @@
 
 const EventEmitter = require('events');
 const Utils = require('../utils/Utils');
+const Storage = require('../structure/Storage');
 const ClientWebSocket = require('./websocket/ClientWebSocket');
 const CommandManager = require('../utils/CommandManager');
 
@@ -32,6 +33,11 @@ class Client extends EventEmitter {
     this._channels = this.options.channels || [];
 
     /**
+     * @type {Storage}
+     */
+    this.channels = new Storage();
+
+    /**
      * User that the client is logged in as
      * @type {?string}
      */
@@ -39,7 +45,7 @@ class Client extends EventEmitter {
 
     /**
      * @type {ClientWebSocket}
-     * @private
+     * @public
      */
     this.ws = new ClientWebSocket(this);
 
@@ -106,49 +112,6 @@ class Client extends EventEmitter {
   get _time() {
     if (this.currentLatency <= 600) return 600;
     else return this.currentLatency + 100;
-  }
-
-  /**
-   * Client joins a channel for events/Actions
-   * @param {string} channel - channel name to join 
-   * @returns {Promise<void>}
-   */
-  join(channel) {
-    if (!channel || typeof channel !== 'string') 
-      throw new Error('INVALID_CHANNEL_TYPE');
-    channel = Utils.properChannel(channel);
-    // excute a join command for channel
-    return this._commands.send(null, null, `JOIN ${channel}`, (resolve, reject) => {
-      const eventName = 'voidJoin_0';
-      let hasFulfilled = false;
-      const listener = (err, joinedChannel) => {
-        if (channel === Utils.properChannel(joinedChannel)) {
-          // received event target, resolve or reject
-          this.removeListener(eventName, listener);
-          hasFulfilled = true;
-          if (!err) resolve([channel]);
-          else reject(err);
-        }
-      };
-      this.on(eventName, listener);
-      // race the Promise against a delay
-      const delay = this._time;
-      Utils.wait(delay).then(() => {
-        if (!hasFulfilled) {
-          this.emit(eventName, 'No response from Twitch', channel);
-        }
-      });
-    });
-
-  }
-
-  /**
-   * Channels the client was assigned to 
-   * @returns {string[]}
-   * @readonly
-   */
-  get channels() {
-    return this.options.channels || [];
   }
 }
 

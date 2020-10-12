@@ -77,22 +77,40 @@ module.exports = function(message, WebSocket) {
 
       for (let i = 0; i < joinChannels.length; i++) {
         const channel = joinChannels[i];
-        joinQueue.add(() => {
-          if (WebSocket.socket !== null && WebSocket.socket.readyState === 1)
-            WebSocket.client.join(channel).catch(err => { console.log(err); });
+        WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
+        joinQueue.add(async () => {
+          if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) {
+            if (!channel || typeof channel !== 'string') 
+              throw new Error('INVALID_CHANNEL_TYPE');
+            // excute a join command for channel
+            await WebSocket.socket.send(`JOIN ${channel}`);
+          }
         });
       }
 
       joinQueue.run();
       WebSocket.client.readyAt = Date.now();
-      WebSocket.client.emit(Events.CLIENT_READY);
       WebSocket.client.ready = true;
+      WebSocket.client.emit(Events.CLIENT_READY);
       break;
     }
 
     // notice actions
     case 'NOTICE': {
       NoticeHandlers(message, message_id, content, channel, WebSocket);
+      break;
+    }
+
+    case 'GLOBALUSERSTATE': {
+      // console.log(message);
+      break;
+    }
+    case 'USERSTATE': {
+      // console.log(message);
+      break;
+    }
+    case 'ROOMSTATE': {
+      // console.log(message);
       break;
     }
     
@@ -112,19 +130,18 @@ module.exports = function(message, WebSocket) {
     case 'PRIVMSG': {
       // get user of message
       message.tags.username = message.prefix.split('!')[0];
-      const channelClass = new Channel(WebSocket.client, channel);
 
       // eslint-disable-next-line no-prototype-builtins
       if (message.tags.hasOwnProperty('bits')) {
         WebSocket.client.emit(
           Events.CHEER_MEESSAGE, 
-          new Message(WebSocket.client, message.tags, channelClass, content)
+          new Message(WebSocket.client, message.tags, channel, content)
         );
       // regular chat message
       } else {
         WebSocket.client.emit(
           Events.CHAT_MESSAGE, 
-          new Message(WebSocket.client, message.tags, channelClass, content, false)
+          new Message(WebSocket.client, message.tags, channel, content, false)
         );
       }
       break;

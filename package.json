@@ -1,7 +1,7 @@
 {
   "name": "twitch.tvjs",
   "version": "1.0.0",
-  "description": "twitch api client",
+  "description": "Interface with the twitch api",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/Sunday-fun/Twitch.tvjs.git"
   },
+  "types": "./typings/index.d.ts",
   "keywords": [
     "api",
     "twitch",

@@ -3,11 +3,11 @@
 const Utils = require('../utils/Utils');
 
 class Channel {
-  constructor(client, name) {
+  constructor(client, channel) {
     /**
      * @type {string}
      */
-    this.name = Utils.properChannel(name);
+    this.name = channel;
 
     /**
      * @type {Client}
@@ -26,7 +26,7 @@ class Channel {
    * @param {string} content - message content
    * @returns {Promise<void>}
    */
-  send(content) {
+  async send(content) {
     return new Promise((resolve, reject) => {
       try {
         if (typeof content === 'object') {
@@ -45,11 +45,10 @@ class Channel {
           }
         }
 
-        return Utils.buildMessage(this.client, content, this.name).then(() => {
-          resolve();
-        }).catch(error => {
+        Utils.buildMessage(this.client, content, this.name).catch(error => {
           throw error;
         });
+        resolve();
       } catch (error) {
         reject(error);
       }

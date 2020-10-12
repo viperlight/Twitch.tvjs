@@ -42,7 +42,7 @@ declare module 'twitch.tvjs' {
   }
 
   export class Utils {
-    public static msg(data: string): message;
+    public static unpack(data: string): message;
     public static properChannel(str: string): string;
     public static union(k: any, f: any): any[];
     public static wait(time: number): Promise<void>;

@@ -14,7 +14,7 @@ class Utils {
    * @param {string} data Mesasge string data 
    * @returns {message}
    */
-  static msg(data) {
+  static unpack(data) {
     const message = {
       raw: data,
       tags: {},

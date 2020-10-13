@@ -1,18 +1,27 @@
 'use strict';
 
 const Utils = require('../utils/Utils');
+const Storage = require('../structure/Storage');
 
 class Channel {
   constructor(client, channel) {
     /**
+     * channel name
      * @type {string}
      */
     this.name = channel;
 
     /**
+     * client instance
      * @type {Client}
      */
     this.client = client;
+
+    /**
+     * channel mods
+     * @type {Storage}
+     */
+    this.moderators = new Storage();
   }
 
   /**

@@ -24,7 +24,9 @@ module.exports = function(message, WebSocket) {
     switch (message.command) {
     case 'PONG': {
       const currDate = new Date();
-      WebSocket.client.currentLatency = (currDate.getTime() - WebSocket.client.latency.getTime()) / 1000;
+      WebSocket.client.currentLatency = (
+        currDate.getTime() - WebSocket.client.latency.getTime()
+      ) / 1000;
 
       clearTimeout(WebSocket.pingTimeout);
       break;
@@ -36,7 +38,10 @@ module.exports = function(message, WebSocket) {
       break;
     }
     default:
-      WebSocket.client.emit(Events.ERROR, `Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`);
+      WebSocket.client.emit(
+        Events.ERROR, 
+        `Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`
+      );
       break;
     }
   } else if (message.prefix === 'tmi.twitch.tv') {
@@ -148,7 +153,10 @@ module.exports = function(message, WebSocket) {
     }
 
     default: {
-      WebSocket.client.emit(Events.ERROR, `Could not parse message:\n${JSON.stringify(message, null, 4)}`);
+      WebSocket.client.emit(
+        Events.ERROR, 
+        `Could not parse message:\n${JSON.stringify(message, null, 4)}`
+      );
       break;
     }
     }

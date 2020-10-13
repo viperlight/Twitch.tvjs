@@ -39,9 +39,9 @@ class Client extends EventEmitter {
 
     /**
      * User that the client is logged in as
-     * @type {?string}
+     * @type {?ClientUser}
      */
-    this.username = null;
+    this.user = null;
 
     /**
      * @type {ClientWebSocket}

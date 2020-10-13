@@ -45,7 +45,7 @@ class queue {
 
     atPoint.fn();
     next && setTimeout(() => {
-      this.next();
+      this.play();
     }, next.delay || this.delay);
   }
 

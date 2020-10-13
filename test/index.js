@@ -1,7 +1,7 @@
-const { pass, user } = require('./auth');
+const { pass, user, channels } = require('./auth');
 const tvjs = require('../src');
 const client = new tvjs.Client({
-  channels: ['xa_puppet']
+  channels: channels
 });
 
 // const testStorage = new tvjs.Storage();
@@ -18,7 +18,8 @@ const client = new tvjs.Client({
 // console.log(testStorage);
 
 client.on('ready', () => {
-  console.log('Ready');
+  console.log(client.user);
+  // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));
   // console.log(client.channels.find(f => f.name == '#xa_puppet'));
 });

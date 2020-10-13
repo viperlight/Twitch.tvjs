@@ -5,6 +5,7 @@ const Queue = require('../../utils/Queue');
 const Utils = require('../../utils/Utils');
 const Message = require('../../structure/Message');
 const Channel = require('../../structure/Channel');
+const ClientUser = require('../../structure/ClientUser');
 const NoticeHandlers = require('./NOTICE');
 
 /**
@@ -52,14 +53,10 @@ module.exports = function(message, WebSocket) {
     case '375':
     case '376':
     case 'cap':
+    case '001': 
+      // WebSocket.client.username = message.params[0];
       break;
     
-    // server username
-    case '001': {
-      WebSocket.client.username = message.params[0];
-      break;
-    }
-
     // connections set
     case '372': {
       WebSocket.sendLoop = setInterval(() => {
@@ -94,9 +91,6 @@ module.exports = function(message, WebSocket) {
       }
 
       joinQueue.run();
-      WebSocket.client.readyAt = Date.now();
-      WebSocket.client.ready = true;
-      WebSocket.client.emit(Events.CLIENT_READY);
       break;
     }
 
@@ -107,7 +101,13 @@ module.exports = function(message, WebSocket) {
     }
 
     case 'GLOBALUSERSTATE': {
-      // console.log(message);
+      console.log(message.tags);
+      const user = new ClientUser(message.tags);
+
+      WebSocket.client.user = user;
+      WebSocket.client.readyAt = Date.now();
+      WebSocket.client.ready = true;
+      WebSocket.client.emit(Events.CLIENT_READY);
       break;
     }
     case 'USERSTATE': {

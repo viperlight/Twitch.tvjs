@@ -101,7 +101,6 @@ module.exports = function(message, WebSocket) {
     }
 
     case 'GLOBALUSERSTATE': {
-      console.log(message.tags);
       const user = new ClientUser(message.tags);
 
       WebSocket.client.user = user;
@@ -111,11 +110,13 @@ module.exports = function(message, WebSocket) {
       break;
     }
     case 'USERSTATE': {
-      // console.log(message);
+      console.log('>>>>>>>>>>>>>>>');
+      console.log(message);
       break;
     }
     case 'ROOMSTATE': {
-      // console.log(message);
+      console.log('>>>>>>>>>>>>>>>');
+      console.log(message);
       break;
     }
     

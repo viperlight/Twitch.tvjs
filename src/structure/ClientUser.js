@@ -20,13 +20,6 @@ class ClientUser {
      */
     this.id = this.data['user-id'];
   }
-
-  get color() {
-    if (typeof this.data.color !== 'string') {
-      return null;
-    }
-    return this.data.color;
-  }
 }
 
 module.exports = ClientUser;

@@ -18,6 +18,7 @@ const client = new tvjs.Client({
 // console.log(testStorage);
 
 client.on('ready', () => {
+  console.log('Ready');
   // console.log(client.user);
   // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events } = require('../../utils/Constants');
+const { Events, ChatTypes } = require('../../utils/Constants');
 const Queue = require('../../utils/Queue');
 const Utils = require('../../utils/Utils');
 const Message = require('../../structure/Message');
@@ -99,7 +99,7 @@ module.exports = function(message, WebSocket) {
       NoticeHandlers(message, message_id, content, channel, WebSocket);
       break;
     }
-
+    // global user information
     case 'GLOBALUSERSTATE': {
       const user = new ClientUser(message.tags);
 
@@ -109,14 +109,28 @@ module.exports = function(message, WebSocket) {
       WebSocket.client.emit(Events.CLIENT_READY);
       break;
     }
+    // channel user information
     case 'USERSTATE': {
-      console.log('>>>>>>>>>>>>>>>');
-      console.log(message);
+      const statesChannel = WebSocket.client.channels.get(message.params[0]);
+      if (message.tags.mod == '1') {
+        statesChannel.moderators.set(message.tags['display-name'], message.tags);
+      }
       break;
     }
+    // Room/channel joined information
     case 'ROOMSTATE': {
-      console.log('>>>>>>>>>>>>>>>');
-      console.log(message);
+      const room = WebSocket.client.channels.get(message.params[0]);
+      if (message.tags['followers-only'] == '-1') {
+        room.chatType = ChatTypes.ANYONE;
+      } else if (message.tags['followers-only'] == '0') {
+        room.chatType = ChatTypes.FOLLOWERSONLY;
+      } else if (parseInt(message.tags['followers-only']) >= 1) {
+        room.chatType = ChatTypes.AFTERTIME;
+      }
+      room.subs = (message.tags['subs-only'] == '1' ? true : false);
+      room.r9k = (message.tags.r9k == '1' ? true : false);
+      room.id = message.tags['room-id'];
+      WebSocket.client.emit(Events.CLIENT_ROOMJOIN, room);
       break;
     }
     
@@ -124,7 +138,7 @@ module.exports = function(message, WebSocket) {
       break;
     }
   } else if (message.prefix === 'jtv') {
-    console.log('jtv event prefix');
+    console.log('unhandled jtv');
   } else {
     switch (message.command) {
     case '366':

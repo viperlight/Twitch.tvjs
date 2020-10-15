@@ -12,6 +12,12 @@ class Channel {
     this.name = channel;
 
     /**
+     * Room id
+     * @type {?string}
+     */
+    this.id = null;
+
+    /**
      * client instance
      * @type {Client}
      */
@@ -22,6 +28,24 @@ class Channel {
      * @type {Storage}
      */
     this.moderators = new Storage();
+
+    /**
+     * type of chat
+     * @type {?string}
+     */
+    this.chatType = null;
+
+    /**
+     * chat subs only mode
+     * @type {?boolean}
+     */
+    this.subs = null;
+
+    /**
+     * if message characters of 9 must be unique
+     * @type {?boolean}
+     */
+    this.r9k = null;
   }
 
   /**

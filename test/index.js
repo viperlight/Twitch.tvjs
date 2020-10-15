@@ -22,11 +22,17 @@ client.on('ready', () => {
   // console.log(client.user);
   // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));
-  // console.log(client.channels.find(f => f.name == channels[0]));
+  // setTimeout(() => {
+  //   console.log(client.channels.find(f => f.name == channels[0]));
+  // }, 2000);
   // client.channels.map(f => f).forEach(ch => console.log(ch));
 });
 
-// client.on('raw_message', (data) => {
+client.on('joinRoom', () => {
+  console.log(client.channels.find(f => f.name == channels[0]));
+});
+
+// client.on('raw', (data) => {
 //   console.log(data);
 // });
 

@@ -91,13 +91,15 @@ class Client extends EventEmitter {
   
   /**
    * Connects to twitch server
-   * @param {connectionOptions} ops identify data
+   * @param {string} username identify data
+   * @param {string} password identify data
    * @returns {void}
    */
-  login(ops) {
-    if (typeof ops !== 'object' || !ops) throw new Error('INVALID_IDENTIFICATION');
+  login(username, password) {
+    const ops = { username, password };
     if (typeof ops.password !== 'string' || !ops.password && 
-      typeof ops.username !== 'string' || !ops.username) throw new Error('INVALID_IDENTIFICATION-DATA');
+      typeof ops.username !== 'string' || !ops.username) 
+      throw new Error('INVALID_IDENTIFICATION');
     try {
       this.ws.connect(ops);
     } catch (err) {

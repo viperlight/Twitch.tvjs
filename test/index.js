@@ -45,7 +45,4 @@ client.on('chat', (message) => {
   });
 });
 
-client.login({
-  password: pass,
-  username: user
-});
+client.login(user, pass);

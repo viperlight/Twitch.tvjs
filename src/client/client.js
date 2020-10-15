@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { REGEX } = require('../utils/Constants');
 const Utils = require('../utils/Utils');
 const Storage = require('../structure/Storage');
 const ClientWebSocket = require('./websocket/ClientWebSocket');
@@ -100,6 +101,8 @@ class Client extends EventEmitter {
     if (typeof ops.password !== 'string' || !ops.password && 
       typeof ops.username !== 'string' || !ops.username) 
       throw new Error('INVALID_IDENTIFICATION');
+    if (!(REGEX.AUTHFORMAT).test(password))
+      throw new Error('PASS_MALFORMATTED');
     try {
       this.ws.connect(ops);
     } catch (err) {

@@ -28,3 +28,7 @@ exports.ChatTypes = {
   FOLLOWERSONLY: 'followers',
   AFTERTIME: 'followerWait',
 };
+
+exports.REGEX = {
+  AUTHFORMAT: /^oauth:([a-zA-Z0-9]*)$/,
+};

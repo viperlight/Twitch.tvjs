@@ -29,7 +29,7 @@ client.on('ready', () => {
 });
 
 client.on('joinRoom', () => {
-  console.log(client.channels.find(f => f.name == channels[0]));
+  // console.log(client.channels.find(f => f.name == channels[0]));
 });
 
 // client.on('raw', (data) => {

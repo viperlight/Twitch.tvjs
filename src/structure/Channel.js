@@ -69,12 +69,13 @@ class Channel {
           throw new Error('Cant send a empty message');
         
         if ((content.startsWith('.') && !content.startsWith('..')) || content.startsWith('/') || content.startsWith('\\')) {
+          console.log('In loged block.');
           // check of message is a action
           if (content.substr(1, 3) === 'me ') {
-            return this.client._commands.action(this.name, content.substr(4));
+            return this.client.ws.socket.send(`PRIVMSG ${this.name} :\u0001ACTION ${content}\u0001`);
           } else {
             // send message
-            return this.client._commands.send(this.client._time, this.name, content);
+            return this.client.ws.socket.send(`PRIVMSG ${this.name} :${content}`);
           }
         }
 
@@ -86,6 +87,19 @@ class Channel {
         reject(error);
       }
     });
+  }
+
+  /**
+   * leaves this channel
+   * @param {Object} [leaveOps] - method options
+   * @param {boolean} [leaveOps.cached] - whether or not to delete channel from cache
+   * @returns {void}
+   */
+  leave({ cached = false } = {}) {
+    if (!cached)
+      this.client.channels.delete(this.name);
+    this.client.ws.socket.send(`PART ${this.name}`);
+    return;
   }
 }
 

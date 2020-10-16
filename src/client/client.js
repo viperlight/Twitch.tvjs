@@ -5,7 +5,6 @@ const { REGEX } = require('../utils/Constants');
 const Utils = require('../utils/Utils');
 const Storage = require('../structure/Storage');
 const ClientWebSocket = require('./websocket/ClientWebSocket');
-const CommandManager = require('../utils/CommandManager');
 
 /**
  * Main key point for twitch api
@@ -76,13 +75,6 @@ class Client extends EventEmitter {
      * @public
      */
     this.readyAt = null;
-
-    /**
-     * @type {CommandManager}
-     * @private
-     * @readonly
-     */
-    this._commands = new CommandManager(this);
 
     // format all channels
     this.options.channels.forEach((channel, index, array) => {

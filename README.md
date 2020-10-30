@@ -21,9 +21,6 @@ client.on('chat', (message) => {
   }
 });
 
-client.login({
-  password: 'oauth:<password>',
-  username: '<username>'
-});
+client.login('<username>', 'oauth:<password>');
 ```
 

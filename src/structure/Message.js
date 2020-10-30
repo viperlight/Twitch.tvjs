@@ -5,8 +5,7 @@
  * @class {Message}
  */
 class Message {
-  constructor(client, user, channel, content, self = undefined) {
-    // super(client);
+  constructor(client, Viewer, channel, content, self = false) {
 
     /**
      * Client class
@@ -15,14 +14,14 @@ class Message {
     this.client = client;
 
     /**
-     * message use data
-     * @type {User}
+     * message Viewer data
+     * @type {Viewer}
      */
-    this.author = user;
+    this.author = Viewer;
 
     /**
      * message channel
-     * @type {string}
+     * @type {Channel}
      */
     this.channel = client.channels.get(channel);
 
@@ -33,8 +32,8 @@ class Message {
     this.content = content;
 
     /**
-     * if message is from client
-     * @type {?boolean}
+     * Whether the message is from client
+     * @type {boolean}
      */
     this.self = self;
   }

@@ -6,6 +6,7 @@ const Utils = require('../../utils/Utils');
 const Message = require('../../structure/Message');
 const Channel = require('../../structure/Channel');
 const ClientUser = require('../../structure/ClientUser');
+const Viewer = require('../../structure/Viewer');
 const NoticeHandlers = require('./NOTICE');
 
 /**
@@ -79,9 +80,9 @@ module.exports = function(message, WebSocket) {
 
       for (let i = 0; i < joinChannels.length; i++) {
         const channel = joinChannels[i];
-        WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
         joinQueue.add(async () => {
           if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) {
+            WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
             if (!channel || typeof channel !== 'string') 
               throw new Error('INVALID_CHANNEL_TYPE');
             // excute a join command for channel
@@ -138,16 +139,35 @@ module.exports = function(message, WebSocket) {
       break;
     }
   } else if (message.prefix === 'jtv') {
-    console.log('unhandled jtv');
+    console.log('Unhandled "jtv"');
   } else {
     switch (message.command) {
     case '366':
-    case 'JOIN':
     case '353':
       break;
+
+    // emited on channel leave
+    case 'PART': {
+      // const roomData = WebSocket.client.channels.get(message.params[0]);
+      // console.log(message, roomData);
+      break;
+    }
+
+    // emited on join
+    case 'JOIN': {
+      const channel = message.params[1];
+      if (!WebSocket.client.channels.has(Utils.properChannel(channel)))
+        WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
+      break;
+    }
     
     // should be reseved on channel message
     case 'PRIVMSG': {
+      const viewer = new Viewer(message.tags);
+      const room = WebSocket.client.channels.get(message.params[0]);
+      if (viewer.mod) {
+        room.moderators.set(viewer.username, viewer);
+      }
       // get user of message
       message.tags.username = message.prefix.split('!')[0];
 
@@ -155,13 +175,13 @@ module.exports = function(message, WebSocket) {
       if (message.tags.hasOwnProperty('bits')) {
         WebSocket.client.emit(
           Events.CHEER_MEESSAGE, 
-          new Message(WebSocket.client, message.tags, channel, content)
+          new Message(WebSocket.client, viewer, channel, content)
         );
       // regular chat message
       } else {
         WebSocket.client.emit(
           Events.CHAT_MESSAGE, 
-          new Message(WebSocket.client, message.tags, channel, content, false)
+          new Message(WebSocket.client, viewer, channel, content, false)
         );
       }
       break;

@@ -28,21 +28,23 @@ client.on('ready', () => {
   // client.channels.map(f => f).forEach(ch => console.log(ch));
 });
 
+client.on('warn', console.log);
+
 client.on('joinRoom', () => {
   // console.log(client.channels.find(f => f.name == channels[0]));
 });
 
-// client.on('raw', (data) => {
-//   console.log(data);
+// client.on('raw_message', (data) => {
+//   console.log(data.tags);
 // });
 
 client.on('chat', (message) => {
   if (message.self) return;
-  // console.log(message.author);
   // console.log(message.channel.parseName);
-  message.channel.send({
-    content: 'something cool: ',
-  });
+  // message.channel.send({
+  //   content: 'something cool: ',
+  // });
+  message.channel.leave();
 });
 
 client.login(user, pass);

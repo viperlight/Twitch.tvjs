@@ -1,7 +1,14 @@
 'use strict';
 
 class Viewer {
-  constructor(data) {
+  constructor(client, data) {
+    /**
+     * The client that instantiated this
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
     /**
      * viewer display name
      * @type {string}

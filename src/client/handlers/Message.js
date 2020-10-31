@@ -163,7 +163,7 @@ module.exports = function(message, WebSocket) {
     
     // should be reseved on channel message
     case 'PRIVMSG': {
-      const viewer = new Viewer(message.tags);
+      const viewer = new Viewer(WebSocket.client, message.tags);
       const room = WebSocket.client.channels.get(message.params[0]);
       if (viewer.mod) {
         room.moderators.set(viewer.username, viewer);

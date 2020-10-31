@@ -14,7 +14,8 @@ exports.Events = {
   ERROR: 'error',
   WARN: 'warn',
   RAW: 'raw',
-  CLIENT_ROOMJOIN: 'joinRoom'
+  CLIENT_ROOMJOIN: 'joinRoom',
+  CLIENT_ROOMLEAVE: 'leaveRoom',
 };
 
 /**

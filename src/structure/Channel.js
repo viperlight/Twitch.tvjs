@@ -90,14 +90,11 @@ class Channel {
   }
 
   /**
-   * leaves this channel
-   * @param {Object} [leaveOps] - method options
-   * @param {boolean} [leaveOps.cached] - whether or not to delete channel from cache
+   * leaves channel
+   * @example <channel>.leave();
    * @returns {void}
    */
-  leave({ cached = false } = {}) {
-    if (!cached)
-      this.client.channels.delete(this.name);
+  leave() {
     this.client.ws.socket.send(`PART ${this.name}`);
     return;
   }

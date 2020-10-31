@@ -19,7 +19,8 @@ const client = new tvjs.Client({
 
 client.on('ready', () => {
   console.log('Ready');
-  // console.log(client.user);
+  // console.log(client.channels);
+  // console.log(client.channels);
   // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));
   // setTimeout(() => {
@@ -32,10 +33,16 @@ client.on('warn', console.log);
 
 client.on('joinRoom', () => {
   // console.log(client.channels.find(f => f.name == channels[0]));
+  client.channels.find(f => f.name == channels[0]).leave();
+});
+
+client.on('leaveRoom', (room) => {
+  console.log(room.name);
+  console.log(client.channels);
 });
 
 // client.on('raw_message', (data) => {
-//   console.log(data.tags);
+//   console.log(data.command);
 // });
 
 client.on('chat', (message) => {

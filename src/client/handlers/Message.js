@@ -148,15 +148,15 @@ module.exports = function(message, WebSocket) {
 
     // emited on channel leave
     case 'PART': {
-      // const roomData = WebSocket.client.channels.get(message.params[0]);
-      // console.log(message, roomData);
+      const roomData = WebSocket.client.channels.get(channel);
+      WebSocket.client.emit(Events.CLIENT_ROOMLEAVE, roomData);
+      WebSocket.client.channels.delete(channel);
       break;
     }
 
     // emited on join
     case 'JOIN': {
-      const channel = message.params[1];
-      if (!WebSocket.client.channels.has(Utils.properChannel(channel)))
+      if (!WebSocket.client.channels.has(Utils.properChannel(channel))) 
         WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
       break;
     }

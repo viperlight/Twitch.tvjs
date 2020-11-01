@@ -18,6 +18,10 @@ exports.Events = {
   CLIENT_ROOMLEAVE: 'leaveRoom',
 };
 
+exports.Events_Resolvers = {
+  MESSAGE_DUPLICATE_ERROR: '__MESSAGE_DUPLICATE',
+};
+
 /**
  * The modes in which a twitch channel is in
  * * 1, Any one can chat

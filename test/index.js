@@ -33,7 +33,7 @@ client.on('warn', console.log);
 
 client.on('joinRoom', () => {
   // console.log(client.channels.find(f => f.name == channels[0]));
-  client.channels.find(f => f.name == channels[0]).leave();
+  // client.channels.find(f => f.name == channels[0]).leave();
 });
 
 client.on('leaveRoom', (room) => {
@@ -48,10 +48,12 @@ client.on('leaveRoom', (room) => {
 client.on('chat', (message) => {
   if (message.self) return;
   // console.log(message.channel.parseName);
-  // message.channel.send({
-  //   content: 'something cool: ',
-  // });
-  message.channel.leave();
+  message.channel.send({
+    content: 'something cool: ',
+  }).then(m => {
+    console.log(m.author);
+  });
+  // message.channel.leave();
 });
 
 client.login(user, pass);

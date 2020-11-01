@@ -1,6 +1,7 @@
 'use strict';
 
 const Utils = require('../utils/Utils');
+const { Events } = require('../utils/Constants');
 const Storage = require('../structure/Storage');
 
 class Channel {
@@ -67,22 +68,10 @@ class Channel {
         }
         if (content == null || content == undefined)
           throw new Error('Cant send a empty message');
-        
-        if ((content.startsWith('.') && !content.startsWith('..')) || content.startsWith('/') || content.startsWith('\\')) {
-          console.log('In loged block.');
-          // check of message is a action
-          if (content.substr(1, 3) === 'me ') {
-            return this.client.ws.socket.send(`PRIVMSG ${this.name} :\u0001ACTION ${content}\u0001`);
-          } else {
-            // send message
-            return this.client.ws.socket.send(`PRIVMSG ${this.name} :${content}`);
-          }
-        }
 
-        Utils.buildMessage(this.client, content, this.name).catch(error => {
-          throw error;
-        });
-        resolve();
+        const message = Utils.buildMessage(this.client, content, this.name);
+        this.client.emit(Events.CHAT_MESSAGE, message);
+        resolve(message);
       } catch (error) {
         reject(error);
       }

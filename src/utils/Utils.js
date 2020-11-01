@@ -1,6 +1,5 @@
 'use strict';
 
-const { Events } = require('./Constants');
 const Message = require('../structure/Message');
 
 class Utils {
@@ -173,32 +172,26 @@ class Utils {
    * @param {Client} client - inst of client class
    * @param {string} content - message its self
    * @param {string} channel - message channel name
-   * @returns {Promise<void>}
+   * @returns {Message}
    */
   static buildMessage(client, content, channel) {
-    return new Promise((resolve, reject) => {
-      try {
-        if (client.ws.socket == null || client.ws.socket.readyState !== 1) return;
+    if (client.ws.socket == null || client.ws.socket.readyState !== 1) return;
       
-        if (content.length >= 500) {
-          const msg = this.splitLine(content, 500);
-          console.log(msg);
-          content = msg[0];
-        
-          setTimeout(() => {
-            this.buildMessage(client, msg[1], channel);
-          }, 350);
-        }
+    if (content.length >= 500) {
+      const msg = this.splitLine(content, 500);
+      console.log(msg);
+      content = msg[0];
+    
+      setTimeout(() => {
+        this.buildMessage(client, msg[1], channel);
+      }, 350);
+    }
 
-        client.ws.socket.send(`PRIVMSG ${channel} :${content}`);
+    client.ws.socket.send(`PRIVMSG ${channel} :${content}`);
 
-        client.emit(Events.CHAT_MESSAGE, new Message(client, client.username, channel, content, true));
-        // if (this.Action(content)) {} 
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
-    });
+    // client.emit(Events.CHAT_MESSAGE, new Message(client, client.username, channel, content, true));
+    // if (this.Action(content)) {} 
+    return new Message(client, client.username, channel, content, true);
   }
 
   /**

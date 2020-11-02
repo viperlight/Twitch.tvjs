@@ -43,6 +43,7 @@
 			"named": "never",
 			"asyncArrow": "always"
 		}],
-        "no-multi-spaces": "error"
+        "no-multi-spaces": "error",
+        "no-console": "error"
     }
 }

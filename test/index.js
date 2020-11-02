@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { pass, user, channels } = require('./auth');
 const tvjs = require('../src');
 const client = new tvjs.Client({
@@ -19,7 +20,7 @@ const client = new tvjs.Client({
 
 client.on('ready', () => {
   console.log('Ready');
-  // console.log(client.channels);
+  // console.log(client.user);
   // console.log(client.channels);
   // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));
@@ -51,7 +52,7 @@ client.on('chat', (message) => {
   message.channel.send({
     content: 'something cool: ',
   }).then(m => {
-    console.log(m.author);
+    console.log(m);
   });
   // message.channel.leave();
 });

@@ -139,7 +139,7 @@ module.exports = function(message, WebSocket) {
       break;
     }
   } else if (message.prefix === 'jtv') {
-    console.log('Unhandled "jtv"');
+    WebSocket.client.emit(Events.ERROR, 'Unhandled "jtv"');
   } else {
     switch (message.command) {
     case '366':
@@ -168,8 +168,6 @@ module.exports = function(message, WebSocket) {
       if (viewer.mod) {
         room.moderators.set(viewer.username, viewer);
       }
-      // get user of message
-      message.tags.username = message.prefix.split('!')[0];
 
       // eslint-disable-next-line no-prototype-builtins
       if (message.tags.hasOwnProperty('bits')) {

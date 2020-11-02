@@ -3,6 +3,7 @@
 const Utils = require('../utils/Utils');
 const { Events } = require('../utils/Constants');
 const Storage = require('../structure/Storage');
+const Message = require('./Message');
 
 class Channel {
   constructor(client, channel) {
@@ -22,7 +23,7 @@ class Channel {
      * client instance
      * @type {Client}
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * channel mods
@@ -57,7 +58,7 @@ class Channel {
   }
 
   /**
-   * @param {string} content - message content
+   * @param {string | { content: string }} content - message content
    * @returns {Promise<void>}
    */
   async send(content) {
@@ -70,7 +71,11 @@ class Channel {
           throw new Error('Cant send a empty message');
 
         const message = Utils.buildMessage(this.client, content, this.name);
-        this.client.emit(Events.CHAT_MESSAGE, message);
+        if (message instanceof Message)
+          this.client.emit(Events.CHAT_MESSAGE, message);
+        else {
+          throw message.error;
+        }
         resolve(message);
       } catch (error) {
         reject(error);

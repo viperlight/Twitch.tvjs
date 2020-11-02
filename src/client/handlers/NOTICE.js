@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events } = require('../../utils/Constants');
+const { Events, Events_Resolvers } = require('../../utils/Constants');
 
 /**
  * @param {message} message message data
@@ -12,6 +12,7 @@ const { Events } = require('../../utils/Constants');
 module.exports = function(message, message_id, content, channel, WebSocket) {
   switch (message_id) {
   case 'msg_duplicate': {
+    WebSocket.emit(Events_Resolvers.MESSAGE_DUPLICATE_ERROR, new Error(content));
     WebSocket.client.emit(Events.WARN, content);
     break;
   }

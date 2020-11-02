@@ -1,6 +1,7 @@
 'use strict';
 
 const Message = require('../structure/Message');
+const { Events_Resolvers } = require('./Constants');
 
 class Utils {
   constructor() {
@@ -172,14 +173,13 @@ class Utils {
    * @param {Client} client - inst of client class
    * @param {string} content - message its self
    * @param {string} channel - message channel name
-   * @returns {Message}
+   * @returns {Message | Error}
    */
   static buildMessage(client, content, channel) {
     if (client.ws.socket == null || client.ws.socket.readyState !== 1) return;
       
     if (content.length >= 500) {
       const msg = this.splitLine(content, 500);
-      console.log(msg);
       content = msg[0];
     
       setTimeout(() => {
@@ -188,10 +188,14 @@ class Utils {
     }
 
     client.ws.socket.send(`PRIVMSG ${channel} :${content}`);
-
-    // client.emit(Events.CHAT_MESSAGE, new Message(client, client.username, channel, content, true));
-    // if (this.Action(content)) {} 
-    return new Message(client, client.username, channel, content, true);
+    client.ws.on(Events_Resolvers.MESSAGE_DUPLICATE_ERROR, (error) => {
+      return {
+        boolean: false,
+        error,
+      };
+    });
+    
+    return new Message(client, client.user, channel, content, true);
   }
 
   /**

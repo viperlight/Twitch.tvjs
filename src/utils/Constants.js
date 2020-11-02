@@ -19,7 +19,7 @@ exports.Events = {
 };
 
 exports.Events_Resolvers = {
-  MESSAGE_DUPLICATE_ERROR: '__MESSAGE_DUPLICATE',
+  MESSAGE_DUPLICATE_ERROR: '__MESSAGE+DUPLICATE',
 };
 
 /**

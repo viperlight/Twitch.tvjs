@@ -6,12 +6,11 @@
  */
 class Message {
   constructor(client, Viewer, channel, content, self = false) {
-
     /**
      * Client class
      * @type {client}
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * message Viewer data

@@ -11,7 +11,7 @@ const client = new twitch.Client({
 });
 
 client.on('ready', () => {
-  console.log(`${client.username} Ready`);
+  console.log(`${client.user.username} Ready`);
 });
 
 client.on('chat', (message) => {

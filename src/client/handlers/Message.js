@@ -21,6 +21,7 @@ module.exports = function(message, WebSocket) {
   const channel = message.params[0] || null;
   const content = message.params[1] || null;
   const message_id = message.tags['msg-id'] || null;
+  message.tags.channel = channel;
 
   if (message.prefix === null) {
     switch (message.command) {

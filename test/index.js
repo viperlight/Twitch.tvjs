@@ -48,7 +48,7 @@ client.on('leaveRoom', (room) => {
 
 client.on('chat', (message) => {
   if (message.self) return;
-  // console.log(message.channel.parseName);
+  console.log(message);
   message.channel.send({
     content: 'something cool: ',
   }).then(m => {

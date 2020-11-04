@@ -1,5 +1,7 @@
 'use strict';
 
+const Utils = require('../utils/Utils');
+
 class Viewer {
   constructor(client, data) {
     /**
@@ -44,6 +46,42 @@ class Viewer {
      * @type {boolean}
      */
     this.subscriber = data.subscriber == '1' ? true : false;
+
+    /**
+     * The channel of the viewer
+     * @type {Channel}
+     */
+    this.channel = client.channels.get(data.channel);
+  }
+
+  /**
+   * ban this Viewer from chat
+   * @param {string} [reason] - ban reason
+   * @returns {Promise<Viewer>}
+   */
+  ban(reason) {
+    return new Promise((resolve, reject) => {
+      if (reason && typeof reason !== 'string') throw new Error('Parameter "reason" must be string');
+      const msg = Utils.buildMessage(this.client, `/ban ${this.username} ${reason}`, this.channel.name);
+      if (!msg.error) {
+        resolve(this);
+      } else reject(msg.error);
+    });
+  }
+
+  /**
+   * Timeout this viewer
+   * @param {string} [time='1h'] - timeout time for viewer
+   * @returns {Promise<void>}
+   */
+  timeout(time = '1h') {
+    return new Promise((resolve, reject) => {
+      if (time && typeof time !== 'string') throw new Error('Parameter "time" must be string');
+      const msg = Utils.buildMessage(this.client, `/timeout ${this.username} ${time}`, this.channel.name);
+      if (!msg.error) {
+        resolve(this);
+      } else reject(msg.error);
+    });
   }
 }
 

@@ -69,9 +69,11 @@ class Viewer {
       this.client.ws.on(Events_Resolvers.VIEWER_BAN_SUCCESS, () => {
         this.client.emit(Events.VIEWER_BAN, this);
       });
-      if (msg instanceof Message) {
-        resolve(this);
-      } else reject(msg.error);
+      setTimeout(() => {
+        if (msg instanceof Message) {
+          resolve(this);
+        } else reject(msg.error);
+      }, 200);
     });
   }
 

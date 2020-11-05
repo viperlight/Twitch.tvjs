@@ -16,10 +16,13 @@ exports.Events = {
   RAW: 'raw',
   CLIENT_ROOMJOIN: 'joinRoom',
   CLIENT_ROOMLEAVE: 'leaveRoom',
+  VIEWER_BAN: 'viewerBan'
 };
 
 exports.Events_Resolvers = {
   MESSAGE_DUPLICATE_ERROR: '__MESSAGE+DUPLICATE',
+  VIEWER_BAN_ERROR: '__VIEWER_BAN+ERROR',
+  VIEWER_BAN_SUCCESS: '__VIEWER_BAN+SUCCESS'
 };
 
 /**

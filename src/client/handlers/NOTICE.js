@@ -17,6 +17,24 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
     break;
   }
 
+  // failed to ban
+  case 'bad_ban_broadcaster':
+  case 'bad_ban_global_mod':
+  case 'already_banned':
+  case 'bad_ban_admin':
+  case 'bad_ban_self':
+  case 'bad_ban_staff':
+  case 'usage_ban': {
+    WebSocket.emit(Events_Resolvers.VIEWER_BAN_ERROR, new Error(content));
+    WebSocket.client.emit(Events.ERROR, `${channel}: ${content}`);
+    break;
+  }
+
+  case 'ban_success': {
+    WebSocket.emit(Events_Resolvers.VIEWER_BAN_SUCCESS);
+    break;
+  }
+
   default: {
     if (content.includes('Login unsuccessful') || content.includes('Login authentication failed')) {
       WebSocket.client.reconnect = false;

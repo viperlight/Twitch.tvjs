@@ -2,6 +2,7 @@
 
 const Utils = require('../utils/Utils');
 const Message = require('./Message');
+const { Events_Resolvers, Events } = require('../utils/Constants');
 
 class Viewer {
   constructor(client, data) {
@@ -63,7 +64,11 @@ class Viewer {
   ban(reason) {
     return new Promise((resolve, reject) => {
       if (reason && typeof reason !== 'string') throw new Error('Parameter "reason" must be string');
-      const msg = Utils.buildMessage(this.client, `/ban ${this.username} ${reason}`, this.channel.name);
+      let msg = Utils.buildMessage(this.client, `/ban ${this.username} ${reason}`, this.channel.name);
+      this.client.ws.on(Events_Resolvers.VIEWER_BAN_ERROR, (error) => msg = { error });
+      this.client.ws.on(Events_Resolvers.VIEWER_BAN_SUCCESS, () => {
+        this.client.emit(Events.VIEWER_BAN, this);
+      });
       if (msg instanceof Message) {
         resolve(this);
       } else reject(msg.error);

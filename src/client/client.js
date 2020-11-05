@@ -95,11 +95,7 @@ class Client extends EventEmitter {
       throw new Error('INVALID_IDENTIFICATION');
     if (!(REGEX.AUTHFORMAT).test(password))
       throw new Error('PASS_MALFORMATTED');
-    try {
-      this.ws.connect(ops);
-    } catch (err) {
-      console.log(err);
-    }
+    this.ws.connect(ops);
   }
 
   /**

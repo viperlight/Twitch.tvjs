@@ -57,7 +57,6 @@ class ClientWebSocket extends EventEmitter {
       this.socket.onclose = this.handleClose.bind(this, ops);
       this.socket.onopen = this.handleOpening.bind(this, ops);
     } catch (error) {
-      console.log(error);
       return error;
     }
   }

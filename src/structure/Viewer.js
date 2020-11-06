@@ -86,10 +86,16 @@ class Viewer {
     return new Promise((resolve, reject) => {
       if (typeof time !== 'number') throw new Error('Parameter "time" must be number in Milliseconds');
       time = Math.floor((time / (1000))).toString();
-      const msg = Utils.buildMessage(this.client, `/timeout ${this.username} ${time}`, this.channel.name);
-      if (msg instanceof Message) {
-        resolve(this);
-      } else reject(msg.error);
+      let msg = Utils.buildMessage(this.client, `/timeout ${this.username} ${time}`, this.channel.name);
+      this.client.ws.on(Events_Resolvers.VIEWER_TIMEOUT_ERROR, (error) => msg = { error });
+      this.client.ws.on(Events_Resolvers.VIEWER_TIMEOUT_SUCCESS, () => {
+        this.client.emit(Events.VIEWER_TIMEOUT, this);
+      });
+      setTimeout(() => {
+        if (msg instanceof Message) {
+          resolve(this);
+        } else reject(msg.error);
+      }, 200);
     });
   }
 }

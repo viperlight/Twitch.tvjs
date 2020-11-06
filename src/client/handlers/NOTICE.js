@@ -35,6 +35,25 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
     break;
   }
 
+  // failed to timeout
+  case 'bad_timeout_broadcaster':
+  case 'bad_timeout_duration':
+  case 'bad_timeout_global_mod':
+  case 'bad_timeout_mod':
+  case 'bad_timeout_self':
+  case 'bad_timeout_staff':
+  case 'usage_timeout':
+  case 'bad_timeout_admin': {
+    WebSocket.emit(Events_Resolvers.VIEWER_TIMEOUT_ERROR, new Error(content));
+    WebSocket.client.emit(Events.ERROR, `${channel}: ${content}`);
+    break;
+  }
+
+  case 'timeout_success': {
+    WebSocket.emit(Events_Resolvers.VIEWER_TIMEOUT_SUCCESS);
+    break;
+  }
+
   default: {
     if (content.includes('Login unsuccessful') || content.includes('Login authentication failed')) {
       WebSocket.client.reconnect = false;

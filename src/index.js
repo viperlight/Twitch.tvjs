@@ -7,4 +7,5 @@ module.exports = {
   Storage: require('./structure/Storage'),
   Message: require('./structure/Message'),
   Channel: require('./structure/Channel'),
+  Viewer: require('./structure/Viewer'),
 };

@@ -4,3 +4,4 @@ package-lock.json
 
 # misc
 test/auth.js
+docs/docs.json

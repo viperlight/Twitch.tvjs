@@ -111,7 +111,7 @@ declare module 'twitch.tvjs' {
     public subs?: boolean;
     public r9k?: boolean;
     public parseName: string;
-    public send(content: string | { content: string }): Promise<void>;
+    public send(content: string | { content: string }): Promise<Message>;
     public leave(): void;
   }
 

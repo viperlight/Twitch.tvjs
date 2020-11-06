@@ -59,7 +59,7 @@ class Channel {
 
   /**
    * @param {string | { content: string }} content - message content
-   * @returns {Promise<void>}
+   * @returns {Promise<Message>}
    */
   async send(content) {
     return new Promise((resolve, reject) => {

@@ -83,9 +83,9 @@ class Client extends EventEmitter {
   }
   
   /**
-   * Connects to twitch server
-   * @param {string} username identify data
-   * @param {string} password identify data
+   * Connect to twitch
+   * @param {string} username - accounts username
+   * @param {string} password - accounts auth password
    * @returns {void}
    */
   login(username, password) {

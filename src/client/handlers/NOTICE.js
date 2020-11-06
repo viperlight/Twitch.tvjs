@@ -26,7 +26,7 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
   case 'bad_ban_staff':
   case 'usage_ban': {
     WebSocket.emit(Events_Resolvers.VIEWER_BAN_ERROR, new Error(content));
-    WebSocket.client.emit(Events.ERROR, `${channel}: ${content}`);
+    WebSocket.client.emit(Events.WARN, `${channel}: ${content}`);
     break;
   }
 
@@ -45,7 +45,7 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
   case 'usage_timeout':
   case 'bad_timeout_admin': {
     WebSocket.emit(Events_Resolvers.VIEWER_TIMEOUT_ERROR, new Error(content));
-    WebSocket.client.emit(Events.ERROR, `${channel}: ${content}`);
+    WebSocket.client.emit(Events.WARN, `${channel}: ${content}`);
     break;
   }
 

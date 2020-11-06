@@ -5,21 +5,9 @@ const client = new tvjs.Client({
   channels: channels
 });
 
-const tests = [
-  async (message) => await message.author.ban(),
-  // (message) => message.channel.send('somthing'),
-  // (message) => message.channel.send({
-  //   content: 'somthing else'
-  // }),
-];
-
 client.on('chat', async (message) => {
   if (message.self) return;
-  for await (const test of tests) {
-    setTimeout(async () => {
-      console.log(await test(message));
-    }, 3000);
-  }
+  await message.author.timeout();
 });
 
 client.login(user, pass);

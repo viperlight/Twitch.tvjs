@@ -97,15 +97,6 @@ class Client extends EventEmitter {
       throw new Error('PASS_MALFORMATTED');
     this.ws.connect(ops);
   }
-
-  /**
-   * @private
-   * @returns {number}
-   */
-  get _time() {
-    if (this.currentLatency <= 600) return 600;
-    else return this.currentLatency + 100;
-  }
 }
 
 module.exports = Client;

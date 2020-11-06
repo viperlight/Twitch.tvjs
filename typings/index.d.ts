@@ -14,7 +14,6 @@ declare module 'twitch.tvjs' {
     public currentLatency: number;
     public latency: Date;
     public readyAt?: number;
-    private _time: number;
 
     public login(username: string, password: string): void;
 

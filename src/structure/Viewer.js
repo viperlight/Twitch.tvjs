@@ -29,7 +29,7 @@ class Viewer {
      * Whether the viewer is mod
      * @type {boolean}
      */
-    this.mod = data.mod == '1' ? true : false;
+    this.mod = data.mod == '1';
 
     /**
      * viewers channel color id
@@ -47,7 +47,7 @@ class Viewer {
      * Whether the viewer is a subscriber
      * @type {boolean}
      */
-    this.subscriber = data.subscriber == '1' ? true : false;
+    this.subscriber = data.subscriber == '1';
 
     /**
      * The channel of the viewer

@@ -129,8 +129,8 @@ module.exports = function(message, WebSocket) {
       } else if (parseInt(message.tags['followers-only']) >= 1) {
         room.chatType = ChatTypes.AFTERTIME;
       }
-      room.subs = (message.tags['subs-only'] == '1' ? true : false);
-      room.r9k = (message.tags.r9k == '1' ? true : false);
+      room.subs = message.tags['subs-only'] == '1';
+      room.r9k = message.tags.r9k == '1';
       room.id = message.tags['room-id'];
       WebSocket.client.emit(Events.CLIENT_ROOMJOIN, room);
       break;

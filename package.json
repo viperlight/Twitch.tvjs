@@ -7,11 +7,21 @@
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "docs:test": "docgen --source src --custom docs/index.yml"
   },
+  "types": "./typings/index.d.ts",
+  "exports": {
+    ".": [
+      {
+        "require": "./src/index.js",
+        "import": "./esm/twitch.mjs"
+      },
+      "./src/index.js"
+    ],
+    "./esm": "./esm/twitch.mjs"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Sunday-fun/Twitch.tvjs.git"
   },
-  "types": "./typings/index.d.ts",
   "keywords": [
     "api",
     "twitch",

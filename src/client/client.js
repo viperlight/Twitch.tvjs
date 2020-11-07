@@ -7,7 +7,7 @@ const Storage = require('../structure/Storage');
 const ClientWebSocket = require('./websocket/ClientWebSocket');
 
 /**
- * Main key point for twitch api
+ * CLient, The Main hub point twitch api
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
@@ -21,7 +21,7 @@ class Client extends EventEmitter {
     this.options = options;
 
     /**
-     * whether or not to reconnect the client if gets disconnected 
+     * Whether or not to reconnect the client if gets disconnected 
      * @type {boolean}
      */
     this.reconnect = this.options.reconnect || false;
@@ -64,6 +64,7 @@ class Client extends EventEmitter {
     this.currentLatency = 0;
 
     /**
+     * Respons latency
      * @type {Date}
      * @public
      */

@@ -5,6 +5,9 @@ const { Events } = require('../utils/Constants');
 const Storage = require('../structure/Storage');
 const Message = require('./Message');
 
+/**
+ * Twitch Chat, Room or Channel
+ */
 class Channel {
   constructor(client, channel) {
     /**

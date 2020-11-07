@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Clients global user
+ */
 class ClientUser {
   constructor(data) {
 

@@ -14,7 +14,7 @@ class Channel {
     this.name = channel;
 
     /**
-     * Room id
+     * Channel id
      * @type {?string}
      */
     this.id = null;
@@ -26,13 +26,13 @@ class Channel {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * channel mods
-     * @type {Storage}
+     * Channel moderators
+     * @type {Storage<string, Viewer>}
      */
     this.moderators = new Storage();
 
     /**
-     * type of chat
+     * Type of chat
      * @type {?string}
      */
     this.chatType = null;
@@ -58,8 +58,11 @@ class Channel {
   }
 
   /**
+   * Message that channel
    * @param {string | { content: string }} content - message content
    * @returns {Promise<Message>}
+   * @example 
+   * <channel>.send('ping').catch(console.log);
    */
   async send(content) {
     return new Promise((resolve, reject) => {
@@ -85,8 +88,8 @@ class Channel {
 
   /**
    * leaves channel
-   * @example <channel>.leave();
    * @returns {void}
+   * @example <channel>.leave();
    */
   leave() {
     this.client.ws.socket.send(`PART ${this.name}`);

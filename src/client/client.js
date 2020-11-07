@@ -33,7 +33,7 @@ class Client extends EventEmitter {
     this._channels = this.options.channels || [];
 
     /**
-     * @type {Storage}
+     * @type {Storage<string, Channel>}
      */
     this.channels = new Storage();
 

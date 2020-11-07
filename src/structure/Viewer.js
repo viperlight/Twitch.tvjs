@@ -4,23 +4,25 @@ const Utils = require('../utils/Utils');
 const Message = require('./Message');
 const { Events_Resolvers, Events } = require('../utils/Constants');
 
+/**
+ * A message user structure
+ */
 class Viewer {
   constructor(client, data) {
     /**
      * The client that instantiated this
      * @type {Client}
-     * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * viewer display name
+     * Viewer display name
      * @type {string}
      */
     this.username = data['display-name'];
 
     /**
-     * viewer id
+     * Viewer id
      * @type {string}
      */
     this.id = data['user-id'];
@@ -32,32 +34,32 @@ class Viewer {
     this.mod = data.mod == '1';
 
     /**
-     * viewers channel color id
+     * Viewers channel color
      * @type {?string}
      */
-    this.color = data.color;
+    this.color = typeof data.color == 'string' ? data.color : null;
 
     /**
-     * viewers chat badges 
+     * Viewers chat badges
      * @type {string}
      */
     this.badges = data.badges;
 
     /**
-     * Whether the viewer is a subscriber
+     * Whether the viewer is a subscriber on this channel
      * @type {boolean}
      */
     this.subscriber = data.subscriber == '1';
 
     /**
-     * The channel of the viewer
+     * The channel from where the viewer was reserved
      * @type {Channel}
      */
     this.channel = client.channels.get(data.channel);
   }
 
   /**
-   * ban this Viewer from chat
+   * Ban this Viewer from Channel
    * @param {string} [reason] - ban reason
    * @returns {Promise<Viewer>}
    */
@@ -78,8 +80,8 @@ class Viewer {
   }
 
   /**
-   * Timeout this viewer
-   * @param {number} [time=60000] - timeout time for viewer
+   * Timeout viewer from channel
+   * @param {number} [time=60000] - timeout time
    * @returns {Promise<Viewer>}
    */
   timeout(time = 60000) {

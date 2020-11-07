@@ -2,7 +2,6 @@
 
 /**
  * Message emeited structure
- * @class {Message}
  */
 class Message {
   constructor(client, Viewer, channel, content, self = false) {

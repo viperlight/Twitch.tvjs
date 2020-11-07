@@ -4,5 +4,6 @@ package-lock.json
 
 # NPM ignore
 test/
+docs/
 .eslintrc.json
 .gitignore

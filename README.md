@@ -2,6 +2,15 @@
 
 Interface with the twitch api
 
+# Install
+* require [node v12+](https://nodejs.org/)
+
+```
+npm install twitch.tvjs
+```
+
+**[Documentation](https://test845a.gitbook.io/twitch-tvjs/)**
+
 # Example usage
 
 ```js

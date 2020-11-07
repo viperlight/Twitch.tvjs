@@ -54,7 +54,9 @@ class Channel {
   }
 
   /**
-   * @returns {string}
+   * Hash sliced name
+   * @type {string}
+   * @readonly
    */
   get parseName() {
     return this.name.slice(1);

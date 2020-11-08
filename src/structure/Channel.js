@@ -1,7 +1,7 @@
 'use strict';
 
 const Utils = require('../utils/Utils');
-const { Events } = require('../utils/Constants');
+const { Events, Events_Resolvers } = require('../utils/Constants');
 const Storage = require('../structure/Storage');
 const Message = require('./Message');
 
@@ -89,6 +89,29 @@ class Channel {
         reject(error);
       }
     });
+  }
+
+  /**
+   * Unbans a viewer from this channel
+   * @param {string} username - Viewer being unban for this channel
+   * @returns {Promise<void>}
+   */
+  unban(username) {
+    return new Promise((resolve, reject) => {
+      if (typeof username !== 'string') throw new Error('Parameter "username" must be string');
+      let message = Utils.buildMessage(this.client, `/unban ${Utils.properUsername(username)}`, this.name);
+      this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_ERROR, (error) => message = { error });
+      this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_SUCCESS, () => {
+        this.client.emit(Events.VIEWER_UNBAN, this);
+      });
+      setTimeout(() => {
+        if (message instanceof Message) {
+          resolve();
+        } else {
+          reject(message.error);
+        }
+      }, 200);
+    });  
   }
 
   /**

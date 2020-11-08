@@ -151,6 +151,16 @@ class Utils {
     return channel[0] === '#' ? channel : `#${channel}`;
   }
 
+  /**
+   * 
+   * @param {string} str channel name
+   * @returns {string}
+   */
+  static properUsername(str) {
+    const username = (str ? str : '').toLowerCase();
+    return username[0] === '#' ? username.slice(1) : username;
+  }
+
   static union(k, f) {
     return [ ...new Set([ ...k, ...f ]) ];
   }

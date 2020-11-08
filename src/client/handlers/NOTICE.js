@@ -1,8 +1,9 @@
 'use strict';
 
-const { Events, Events_Resolvers } = require('../../utils/Constants');
+const { Events, Events_Resolvers, NO_PERMISSION_EMITS } = require('../../utils/Constants');
 
 /**
+ * NOTICE Events {@link https://dev.twitch.tv/docs/irc/msg-id}
  * @param {message} message message data
  * @param {string} message_id message id type
  * @param {string} content message content
@@ -51,6 +52,27 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
 
   case 'timeout_success': {
     WebSocket.emit(Events_Resolvers.VIEWER_TIMEOUT_SUCCESS);
+    break;
+  }
+
+  case 'usage_unban':
+  case 'bad_mod_banned':
+  case 'bad_unban_no_ban': {
+    WebSocket.emit(Events_Resolvers.VIEWER_UNBAN_ERROR, new Error(content));
+    WebSocket.client.emit(Events.WARN, `${channel}: ${content}`);
+    break;
+  }
+
+  case 'unban_success': {
+    WebSocket.emit(Events_Resolvers.VIEWER_UNBAN_SUCCESS);
+    break;
+  }
+
+  case 'no_permission': {
+    WebSocket.emit(Events_Resolvers.NO_PERMISSIONS, content);
+    for (const event of NO_PERMISSION_EMITS) {
+      WebSocket.emit(event, content);
+    }
     break;
   }
 

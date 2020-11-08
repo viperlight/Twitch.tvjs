@@ -17,6 +17,7 @@ exports.Events = {
   CLIENT_ROOMJOIN: 'joinRoom',
   CLIENT_ROOMLEAVE: 'leaveRoom',
   VIEWER_BAN: 'viewerBan',
+  VIEWER_UNBAN: 'viewerUnban',
   VIEWER_TIMEOUT: 'viewerTimeout',
 };
 
@@ -26,6 +27,9 @@ exports.Events_Resolvers = {
   VIEWER_BAN_SUCCESS: '__VIEWER_BAN+SUCCESS',
   VIEWER_TIMEOUT_ERROR: '__VIEWER_TIMEOUT+ERROR',
   VIEWER_TIMEOUT_SUCCESS: '__VIEWER_TIMEOUT+SUCCESS',
+  VIEWER_UNBAN_ERROR: '__VIEWER_UNBAN+ERROR',
+  VIEWER_UNBAN_SUCCESS: '__VIEWER_UNBAN+SUCCESS',
+  NO_PERMISSIONS: '__NO_PERMISSIONS',
 };
 
 /**
@@ -43,3 +47,10 @@ exports.ChatTypes = {
 exports.REGEX = {
   AUTHFORMAT: /^oauth:([a-zA-Z0-9]*)$/,
 };
+
+exports.NO_PERMISSION_EMITS = [
+  this.Events_Resolvers.VIEWER_BAN_ERROR,
+  this.Events_Resolvers.VIEWER_TIMEOUT_ERROR,
+  this.Events_Resolvers.VIEWER_UNBAN_ERROR,
+  this.Events_Resolvers.NO_PERMISSIONS,
+];

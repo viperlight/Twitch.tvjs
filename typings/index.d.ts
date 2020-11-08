@@ -61,6 +61,7 @@ declare module 'twitch.tvjs' {
     public static Action(string: string): boolean;
     public static buildMessage(client: Client, content: string, channel: string): Message;
     public static splitLine(str: string, len: number): string[];
+    public static properUsername(str: string): string;
   }
 
   export class ClientWebSocket extends EventEmitter {
@@ -111,6 +112,7 @@ declare module 'twitch.tvjs' {
     public r9k?: boolean;
     public parseName: string;
     public send(content: string | { content: string }): Promise<Message>;
+    public unban(username: string): Promise<void>;
     public leave(): void;
   }
 

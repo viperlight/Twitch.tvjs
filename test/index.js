@@ -20,8 +20,12 @@ const client = new tvjs.Client({
 
 client.on('ready', () => {
   console.log('Ready');
-  // console.log(client.user);
-  // console.log(client.channels);
+  for (let i = 0; i < 10; i++) {
+    console.log(i);
+    client.channels.get(channels[0]).send(Math.random()).then(m => {
+      console.log(m.content)
+    });
+  }
   // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));
   // setTimeout(() => {
@@ -31,6 +35,7 @@ client.on('ready', () => {
 });
 
 client.on('warn', console.log);
+// client.on('raw', console.log);
 
 client.on('joinRoom', () => {
   // console.log(client.channels.find(f => f.name == channels[0]));

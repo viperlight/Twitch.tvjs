@@ -187,7 +187,7 @@ class Utils {
       }, 350);
     }
 
-    client.ws.socket.send(`PRIVMSG ${channel} :${content}`);
+    client.ws.send(`PRIVMSG ${channel} :${content}`);
     client.ws.on(Events_Resolvers.MESSAGE_DUPLICATE_ERROR, (error) => {
       return {
         boolean: false,

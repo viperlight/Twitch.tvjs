@@ -39,6 +39,21 @@ class ClientWebSocket extends EventEmitter {
      * @type {?setTimeout}
      */
     this.pingTimeout = null;
+
+    /**
+     * Contains the rate limit queue and metadata
+     * @type {Object}
+     * @private
+     */
+    Object.defineProperty(this, 'ratelimit', {
+      value: {
+        queue: [],
+        total: 120,
+        remaining: 120,
+        time: 60e3,
+        timer: null,
+      },
+    });
   }
 
   /**
@@ -64,10 +79,10 @@ class ClientWebSocket extends EventEmitter {
   handleOpening(ops) {
     if (this.socket == null || this.socket.readyState !== 1) return;
     const user = ops.username || `justinfan${Math.floor((Math.random()*80000)+1000)}`;
-    this.socket.send('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership');
+    this.send('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership');
     // identify client
-    this.socket.send(`PASS ${ops.password}`);
-    this.socket.send(`NICK ${user}`);
+    this.send(`PASS ${ops.password}`);
+    this.send(`NICK ${user}`);
   } 
 
   handleClose(ops) {
@@ -96,6 +111,48 @@ class ClientWebSocket extends EventEmitter {
       this.client.emit(Events.RAW, pocket);
       MessageHandlers(Utils.unpack(pocket), this);
     });
+  }
+
+  /**
+   * send a server command to server
+   * @param {string} command - server command
+   * @param {boolean} important - if this command should be added first in queue
+   */
+  send(command, important = false) {
+    this.ratelimit.queue[important ? 'unshift' : 'push'](command);
+    this.process();
+  }
+
+  /**
+   * send data to gatway server
+   * @param {string} command - server command
+   * @private
+   */
+  _send(command) {
+    if (this.socket == null || this.socket.readyState !== 1) return;
+    this.socket.send(command);
+  }
+
+  /**
+   * Process queue
+   * @returns {void}
+   * @private
+   */
+  process() {
+    if (this.ratelimit.remaining === 0) return;
+    if (this.ratelimit.queue.length === 0) return
+    if (this.ratelimit.remaining === this.ratelimit.total) {
+      this.ratelimit.timer = setTimeout(() => {
+        this.ratelimit.remaining = this.ratelimit.total;
+        this.process();
+      }, this.ratelimit.time);
+    }
+    while (this.ratelimit.remaining > 0) {
+      const item = this.ratelimit.queue.shift();
+      if (!item) return;
+      this._send(item);
+      this.ratelimit.remaining--;
+    }
   }
 }
 

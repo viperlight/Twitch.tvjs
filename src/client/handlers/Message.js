@@ -37,7 +37,8 @@ module.exports = function(message, WebSocket) {
     // send back in im still here response
     case 'PING': {
       if (WebSocket.socket !== null && WebSocket.socket.readyState === 1)
-        WebSocket.socket.send('PONG');
+        // send back a respons and marked as important
+        WebSocket.send('PONG', true);
       break;
     }
     default:
@@ -63,7 +64,7 @@ module.exports = function(message, WebSocket) {
     case '372': {
       WebSocket.sendLoop = setInterval(() => {
         if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) 
-          WebSocket.socket.send('PING');
+          WebSocket.send('PING');
 
         WebSocket.client.latency = new Date();
         WebSocket.pingTimeout = setTimeout(() => {
@@ -87,7 +88,7 @@ module.exports = function(message, WebSocket) {
             if (!channel || typeof channel !== 'string') 
               throw new Error('INVALID_CHANNEL_TYPE');
             // excute a join command for channel
-            await WebSocket.socket.send(`JOIN ${channel}`);
+            await WebSocket.send(`JOIN ${channel}`);
           }
         });
       }

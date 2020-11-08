@@ -97,7 +97,7 @@ class Channel {
    * @example <channel>.leave();
    */
   leave() {
-    this.client.ws.socket.send(`PART ${this.name}`);
+    this.client.ws.send(`PART ${this.name}`);
     return;
   }
 }

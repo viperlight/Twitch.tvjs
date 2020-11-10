@@ -7,6 +7,7 @@ declare module 'twitch.tvjs' {
     public options: ClientOptions;
     public reconnect: boolean;
     public channels: Storage<string, Channel>;
+    public viewer: Storage<string, Viewer>;
     private _channels: string[];
     public user?: ClientUser;
     public ws: ClientWebSocket;
@@ -85,10 +86,10 @@ declare module 'twitch.tvjs' {
     public username: string;
     public id: string;
     public mod: boolean;
-    public color: string;
+    public color?: string;
     public badges: string;
     public subscriber: boolean;
-    public channel: Channel;
+    public channel?: Channel;
 
     public ban(reason?: string): Promise<Viewer>
     public timeout(time?: number): Promise<Viewer>

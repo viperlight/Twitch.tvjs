@@ -33,9 +33,16 @@ class Client extends EventEmitter {
     this._channels = this.options.channels || [];
 
     /**
+     * chached channel the client hase joined
      * @type {Storage<string, Channel>}
      */
     this.channels = new Storage();
+
+    /**
+     * chached viewers the client hase chached during PRIVMSG event
+     * @type {Storage<string, Viewer>}
+     */
+    this.viewers = new Storage();
 
     /**
      * User that the client is logged in as

@@ -165,8 +165,16 @@ module.exports = function(message, WebSocket) {
     
     // should be reseved on channel message
     case 'PRIVMSG': {
-      const viewer = new Viewer(WebSocket.client, message.tags);
+      let viewer;
       const room = WebSocket.client.channels.get(message.params[0]);
+      if (WebSocket.client.viewers.has(message.tags['display-name'])) {
+        viewer = WebSocket.client.viewers.get(message.tags['display-name']);
+        if (viewer.channel !== room) viewer.channel = room;
+      } else {
+        viewer = new Viewer(WebSocket.client, message.tags);
+        WebSocket.client.viewers.set(viewer.username, viewer);
+      }
+      // check if viwer is a mod of message channel
       if (viewer.mod) {
         room.moderators.set(viewer.username, viewer);
       }

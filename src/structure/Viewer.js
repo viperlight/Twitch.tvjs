@@ -53,7 +53,7 @@ class Viewer {
 
     /**
      * The channel from where the viewer was reserved
-     * @type {Channel}
+     * @type {?Channel}
      */
     this.channel = client.channels.get(data.channel);
   }

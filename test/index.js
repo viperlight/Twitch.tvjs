@@ -20,12 +20,12 @@ const client = new tvjs.Client({
 
 client.on('ready', () => {
   console.log('Ready');
-  for (let i = 0; i < 10; i++) {
-    console.log(i);
-    client.channels.get(channels[0]).send(Math.random()).then(m => {
-      console.log(m.content)
-    });
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   console.log(i);
+  //   client.channels.get(channels[0]).send(Math.random()).then(m => {
+  //     console.log(m.content)
+  //   });
+  // }
   // console.log(client.user.color);
   // console.log(client.channels.map(f => f.name));
   // setTimeout(() => {
@@ -53,12 +53,13 @@ client.on('leaveRoom', (room) => {
 
 client.on('chat', (message) => {
   if (message.self) return;
-  console.log(message);
-  message.channel.send({
-    content: 'something cool: ',
-  }).then(m => {
-    console.log(m);
-  });
+  console.log(client.channels);
+  console.log(client.viewers);
+  // message.channel.send({
+  //   content: 'something cool: ',
+  // }).then(m => {
+  //   console.log(m);
+  // });
   // message.channel.leave();
 });
 

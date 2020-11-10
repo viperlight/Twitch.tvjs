@@ -7,7 +7,7 @@ declare module 'twitch.tvjs' {
     public options: ClientOptions;
     public reconnect: boolean;
     public channels: Storage<string, Channel>;
-    public viewer: Storage<string, Viewer>;
+    public viewers: Storage<string, Viewer>;
     private _channels: string[];
     public user?: ClientUser;
     public ws: ClientWebSocket;

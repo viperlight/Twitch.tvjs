@@ -41,7 +41,7 @@ class Viewer {
 
     /**
      * Viewers chat badges
-     * @type {Object<any, Number}
+     * @type {Object<any, Number>}
      */
     this.badges = Utils.badgesResolver(data.badges);
 

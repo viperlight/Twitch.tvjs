@@ -47,14 +47,17 @@ client.on('leaveRoom', (room) => {
   console.log(client.channels);
 });
 
-// client.on('raw_message', (data) => {
-//   console.log(data.command);
-// });
+client.on('raw_message', (data) => {
+  // if (data.command == 'PRIVMSG') {
+    // console.log(data);
+  // }
+});
 
-client.on('chat', (message) => {
+client.on('chat', async (message) => {
   if (message.self) return;
-  console.log(client.channels);
-  console.log(client.viewers);
+  message.channel.deleteMessages(message.id);
+    // .then(m => console.log(m));
+  // message.channel.clear();
   // message.channel.send({
   //   content: 'something cool: ',
   // }).then(m => {

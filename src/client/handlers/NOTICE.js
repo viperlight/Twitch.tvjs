@@ -69,7 +69,6 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
   }
 
   case 'no_permission': {
-    WebSocket.emit(Events_Resolvers.NO_PERMISSIONS, content);
     for (const event of NO_PERMISSION_EMITS) {
       WebSocket.emit(event, content);
     }

@@ -2,7 +2,7 @@
 
 const Utils = require('../utils/Utils');
 const Message = require('./Message');
-const { Events_Resolvers, Events } = require('../utils/Constants');
+const { Events_Resolvers, Events, ERRORS_MSG } = require('../utils/Constants');
 
 /**
  * A message user structure
@@ -41,9 +41,9 @@ class Viewer {
 
     /**
      * Viewers chat badges
-     * @type {string}
+     * @type {Object<any, Number}
      */
-    this.badges = data.badges;
+    this.badges = Utils.badgesResolver(data.badges);
 
     /**
      * Whether the viewer is a subscriber on this channel
@@ -65,7 +65,7 @@ class Viewer {
    */
   ban(reason) {
     return new Promise((resolve, reject) => {
-      if (reason && typeof reason !== 'string') throw new Error('Parameter "reason" must be string');
+      if (reason && typeof reason !== 'string') throw new Error(ERRORS_MSG.MUST_BE('reason', 'string'));
       let msg = Utils.buildMessage(this.client, `/ban ${this.username} ${reason}`, this.channel.name);
       this.client.ws.on(Events_Resolvers.VIEWER_BAN_ERROR, (error) => msg = { error });
       this.client.ws.on(Events_Resolvers.VIEWER_BAN_SUCCESS, () => {
@@ -86,7 +86,7 @@ class Viewer {
    */
   timeout(time = 60000) {
     return new Promise((resolve, reject) => {
-      if (typeof time !== 'number') throw new Error('Parameter "time" must be number in Milliseconds');
+      if (typeof time !== 'number') throw new Error(ERRORS_MSG.MUST_BE('time', 'number in Milliseconds'));
       time = Math.floor((time / (1000))).toString();
       let msg = Utils.buildMessage(this.client, `/timeout ${this.username} ${time}`, this.channel.name);
       this.client.ws.on(Events_Resolvers.VIEWER_TIMEOUT_ERROR, (error) => msg = { error });

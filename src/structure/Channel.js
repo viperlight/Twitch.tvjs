@@ -1,7 +1,7 @@
 'use strict';
 
 const Utils = require('../utils/Utils');
-const { Events, Events_Resolvers } = require('../utils/Constants');
+const { Events, Events_Resolvers, ERRORS_MSG } = require('../utils/Constants');
 const Storage = require('../structure/Storage');
 const Message = require('./Message');
 
@@ -98,7 +98,7 @@ class Channel {
    */
   unban(username) {
     return new Promise((resolve, reject) => {
-      if (typeof username !== 'string') throw new Error('Parameter "username" must be string');
+      if (typeof username !== 'string') throw new Error(ERRORS_MSG.MUST_BE('username', 'string'));
       let message = Utils.buildMessage(this.client, `/unban ${Utils.properUsername(username)}`, this.name);
       this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_ERROR, (error) => message = { error });
       this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_SUCCESS, () => {
@@ -112,6 +112,59 @@ class Channel {
         }
       }, 200);
     });  
+  }
+
+  /**
+   * Clear all messages in chat
+   * @returns {Promise<Channel>}
+   */
+  clear() {
+    return new Promise((resolve, reject) => {
+      let message = Utils.buildMessage(this.client, '/clear', this.name);
+      this.client.ws.on(Events_Resolvers.NO_PERMISSIONS, (error) => message = { error });
+      setTimeout(() => {
+        if (message instanceof Message) {
+          resolve(this);
+        } else {
+          reject(message.error);
+        }
+      }, 200);
+    });
+  }
+
+  /**
+   * Delete message(s) from channel
+   * @param {string | string[]} messageID - id of message to delete
+   * @returns {Promise<void>}
+   */
+  deleteMessages(messageID) {
+    return new Promise((resolve, reject) => {
+      if (Array.isArray(messageID)) {
+        for (const ID of messageID) {
+          let message = Utils.buildMessage(this.client, `/delete ${ID}`, this.name);
+          this.client.ws.on(Events_Resolvers.NO_PERMISSIONS, (error) => message = { error });
+          setTimeout(() => {
+            if (message instanceof Message) {
+              resolve();
+            } else {
+              reject(message.error);
+            }
+          }, 200);
+        }
+      } else if (typeof messageID === 'string') {
+        let message = Utils.buildMessage(this.client, `/delete ${messageID}`, this.name);
+        this.client.ws.on(Events_Resolvers.NO_PERMISSIONS, (error) => message = { error });
+        setTimeout(() => {
+          if (message instanceof Message) {
+            resolve();
+          } else {
+            reject(message.error);
+          }
+        }, 200);
+      } else {
+        reject(new Error(ERRORS_MSG.MUST_BE('messageID', 'string or string array'))); 
+      }
+    });
   }
 
   /**

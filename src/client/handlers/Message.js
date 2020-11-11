@@ -19,7 +19,6 @@ module.exports = function(message, WebSocket) {
   WebSocket.client.emit(Events.RAW_MESSAGE, message);
 
   const channel = message.params[0] || null;
-  const content = message.params[1] || null;
   const message_id = message.tags['msg-id'] || null;
   message.tags.channel = channel;
 
@@ -99,7 +98,7 @@ module.exports = function(message, WebSocket) {
 
     // notice actions
     case 'NOTICE': {
-      NoticeHandlers(message, message_id, content, channel, WebSocket);
+      NoticeHandlers(message, message_id, (message.params[1] || null), channel, WebSocket);
       break;
     }
     // global user information
@@ -183,13 +182,23 @@ module.exports = function(message, WebSocket) {
       if (message.tags.hasOwnProperty('bits')) {
         WebSocket.client.emit(
           Events.CHEER_MEESSAGE, 
-          new Message(WebSocket.client, viewer, channel, content)
+          new Message(WebSocket.client, { 
+            channel: message.params[0],
+            content: message.params[1],
+            id: message.tags.id,
+            author: viewer
+          })
         );
       // regular chat message
       } else {
         WebSocket.client.emit(
           Events.CHAT_MESSAGE, 
-          new Message(WebSocket.client, viewer, channel, content, false)
+          new Message(WebSocket.client, { 
+            channel: message.params[0],
+            content: message.params[1],
+            id: message.tags.id,
+            author: viewer
+          }, false)
         );
       }
       break;

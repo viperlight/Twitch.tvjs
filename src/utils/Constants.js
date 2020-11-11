@@ -54,3 +54,7 @@ exports.NO_PERMISSION_EMITS = [
   this.Events_Resolvers.VIEWER_UNBAN_ERROR,
   this.Events_Resolvers.NO_PERMISSIONS,
 ];
+
+exports.ERRORS_MSG = {
+  MUST_BE: (param, must) => `Parameter "${param}" must be ${must}`
+}

@@ -205,7 +205,11 @@ class Utils {
       };
     });
     
-    return new Message(client, client.user, channel, content, true);
+    return new Message(client, { 
+      id: null,
+      author: client.user,  
+      channel, content,
+    }, true);
   }
 
   /**
@@ -217,6 +221,21 @@ class Utils {
     let lastSpace = str.substring(0, len).lastIndexOf(' ');
     if (lastSpace === -1) lastSpace = len - 1;
     return [str.substring(0, lastSpace), str.substring(lastSpace + 1)];
+  }
+
+  /**
+   * resolves badges form a string
+   * @param {string} badgesString - string of badges
+   * @returns {Object<any, number>}
+   */
+  static badgesResolver(badgesString) {
+    const obj = {};
+    const splitBadges = badgesString.split(',');
+    for (const badge of splitBadges) {
+      const resolved = badge.split('/');
+      obj[resolved[0]] = parseInt(resolved[1]);
+    }
+    return obj;
   }
 }
 

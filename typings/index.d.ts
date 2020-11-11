@@ -136,8 +136,8 @@ declare module 'twitch.tvjs' {
   }
 
   export interface ClientOptions {
-    channels: string[],
-    reconnect: boolean,
+    channels?: string[],
+    reconnect?: boolean,
   }
 
   export class Storage<K, V> extends Map<K, V> {

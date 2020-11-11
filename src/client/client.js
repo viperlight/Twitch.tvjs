@@ -12,7 +12,7 @@ const ClientWebSocket = require('./websocket/ClientWebSocket');
  */
 class Client extends EventEmitter {
   constructor(options = {}) {
-    super(options);
+    super();
 
     /**
      * client options

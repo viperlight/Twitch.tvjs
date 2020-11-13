@@ -143,6 +143,7 @@ class Channel {
         for (const ID of messageID) {
           let message = Utils.buildMessage(this.client, `/delete ${ID}`, this.name);
           this.client.ws.on(Events_Resolvers.NO_PERMISSIONS, (error) => message = { error });
+          this.client.ws.on(Events_Resolvers.MESSAGE_DELETE_ERROR, (error) => message = { error });
           setTimeout(() => {
             if (message instanceof Message) {
               resolve();
@@ -154,6 +155,7 @@ class Channel {
       } else if (typeof messageID === 'string') {
         let message = Utils.buildMessage(this.client, `/delete ${messageID}`, this.name);
         this.client.ws.on(Events_Resolvers.NO_PERMISSIONS, (error) => message = { error });
+        this.client.ws.on(Events_Resolvers.MESSAGE_DELETE_ERROR, (error) => message = { error });
         setTimeout(() => {
           if (message instanceof Message) {
             resolve();

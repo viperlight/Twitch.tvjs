@@ -55,6 +55,7 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
     break;
   }
 
+  // failed to unban
   case 'usage_unban':
   case 'bad_mod_banned':
   case 'bad_unban_no_ban': {
@@ -65,6 +66,17 @@ module.exports = function(message, message_id, content, channel, WebSocket) {
 
   case 'unban_success': {
     WebSocket.emit(Events_Resolvers.VIEWER_UNBAN_SUCCESS);
+    break;
+  }
+
+  case 'bad_delete_message_mod':
+  case 'bad_delete_message_broadcaster': {
+    WebSocket.emit(Events_Resolvers.MESSAGE_DELETE_ERROR, content);
+    break;
+  }
+
+  case 'delete_message_success': {
+    WebSocket.emit(Events_Resolvers.MESSAGE_DELETE_SUCCESS);
     break;
   }
 

@@ -63,6 +63,7 @@ declare module 'twitch.tvjs' {
     public static buildMessage(client: Client, content: string, channel: string): Message;
     public static splitLine(str: string, len: number): string[];
     public static properUsername(str: string): string;
+    public static badgesResolver(badgesString: string): Object;
   }
 
   export class ClientWebSocket extends EventEmitter {
@@ -87,7 +88,7 @@ declare module 'twitch.tvjs' {
     public id: string;
     public mod: boolean;
     public color?: string;
-    public badges: string;
+    public badges: Object;
     public subscriber: boolean;
     public channel?: Channel;
 
@@ -101,6 +102,8 @@ declare module 'twitch.tvjs' {
     public channel: Channel;
     public content: string;
     public self: boolean;
+
+    public reply(content: string | { content: string }): Promise<Message>;
   }
 
   export class Channel {
@@ -114,6 +117,8 @@ declare module 'twitch.tvjs' {
     public parseName: string;
     public send(content: string | { content: string }): Promise<Message>;
     public unban(username: string): Promise<void>;
+    public clear(): Promise<Channel>;
+    public deleteMessages(messageID: string | string[]): Promise<void>;
     public leave(): void;
   }
 

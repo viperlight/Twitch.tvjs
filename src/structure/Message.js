@@ -19,7 +19,7 @@ class Message {
 
     /**
      * message channel
-     * @type {Channel}
+     * @type {?Channel}
      */
     this.channel = client.channels.get(message.channel);
 
@@ -40,6 +40,12 @@ class Message {
      * @type {boolean}
      */
     this.self = self;
+
+    /**
+     * emited type of message
+     * @type {messageTypes}
+     */
+    this.type = message.type;
   }
 
   /**
@@ -73,3 +79,7 @@ class Message {
 }
 
 module.exports = Message;
+
+/**
+ * @typedef {'chat' | 'cheer'} messageTypes
+ */

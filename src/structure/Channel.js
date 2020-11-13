@@ -36,7 +36,7 @@ class Channel {
 
     /**
      * Type of chat
-     * @type {?string}
+     * @type {?ChatTypes}
      */
     this.chatType = null;
 
@@ -51,15 +51,6 @@ class Channel {
      * @type {?boolean}
      */
     this.r9k = null;
-  }
-
-  /**
-   * Hash sliced name
-   * @type {string}
-   * @readonly
-   */
-  get parseName() {
-    return this.name.slice(1);
   }
 
   /**
@@ -181,3 +172,7 @@ class Channel {
 }
 
 module.exports = Channel;
+
+/**
+ * @typedef {'any' | 'followers' | 'followerWait'} ChatTypes
+ */

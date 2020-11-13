@@ -11,12 +11,16 @@ const ClientWebSocket = require('./websocket/ClientWebSocket');
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
+  /**
+   * Client options
+   * @param {ClientOptions} [options] 
+   */
   constructor(options = {}) {
     super();
 
     /**
-     * client options
-     * @type {?clientOptions}
+     * Client options
+     * @type {?ClientOptions}
      */
     this.options = options;
 
@@ -52,35 +56,30 @@ class Client extends EventEmitter {
 
     /**
      * @type {ClientWebSocket}
-     * @public
      */
     this.ws = new ClientWebSocket(this);
 
     /**
      * whether or not the client is ready
      * @type {boolean}
-     * @public
      */
     this.ready = false;
 
     /**
      * Client ping rate
      * @type {number}
-     * @public
      */
     this.currentLatency = 0;
 
     /**
-     * Respons latency
+     * Response latency
      * @type {Date}
-     * @public
      */
     this.latency = new Date();
 
     /**
      * The time the client was ready at
      * @type {?number}
-     * @public
      */
     this.readyAt = null;
 
@@ -108,3 +107,9 @@ class Client extends EventEmitter {
 }
 
 module.exports = Client;
+
+/**
+ * @typedef {Object} ClientOptions
+ * @property {string[]} [channels] - Channel this client will be joining
+ * @property {boolean} [reconnect] - Whether or not to reconnect the client if gets disconnected
+ */

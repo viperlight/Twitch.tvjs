@@ -79,7 +79,7 @@ declare module 'twitch.tvjs' {
     public handleOpening(opt: connectionOptions): void;
     public handleClose(opt: connectionOptions): void;
     public handleError(opt: connectionOptions): void;
-    public handleMessage(event: string): void;
+    public handleMessage(event: MessageEvent<string>): void;
   }
 
   export class Viewer {
@@ -99,9 +99,10 @@ declare module 'twitch.tvjs' {
   export class Message {
     public client: Client;
     public author: Viewer;
-    public channel: Channel;
+    public channel?: Channel;
     public content: string;
     public self: boolean;
+    public id?: string;
 
     public reply(content: string | { content: string }): Promise<Message>;
   }
@@ -114,7 +115,7 @@ declare module 'twitch.tvjs' {
     public chatType?: ChatTypes;
     public subs?: boolean;
     public r9k?: boolean;
-    public parseName: string;
+
     public send(content: string | { content: string }): Promise<Message>;
     public unban(username: string): Promise<void>;
     public clear(): Promise<Channel>;

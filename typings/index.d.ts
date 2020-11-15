@@ -32,6 +32,8 @@ declare module 'twitch.tvjs' {
     on(event: 'viewerBan', listener: (viewer: Viewer) => void): this;
     on(event: 'viewerTimeout', listener: (viewer: Viewer) => void): this;
     on(event: 'cheer', listener: (message: Message) => void): this;
+    on(event: 'hosting', listener: (room: Channel, count: string, hosted: string) => void): this;
+    on(event: 'stopHosting', listener: (room: Channel, count: string) => void): this;
 
     once(event: string, listener: Function): this;
     once(event: 'ready', listener: () => void): this;
@@ -47,6 +49,8 @@ declare module 'twitch.tvjs' {
     once(event: 'viewerBan', listener: (viewer: Viewer) => void): this;
     once(event: 'viewerTimeout', listener: (viewer: Viewer) => void): this;
     once(event: 'cheer', listener: (message: Message) => void): this;
+    once(event: 'hosting', listener: (room: Channel, count: string, hosted: string) => void): this;
+    once(event: 'stopHosting', listener: (room: Channel, count: string) => void): this;
   }
 
   export class ClientUser {

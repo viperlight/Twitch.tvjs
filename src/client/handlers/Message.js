@@ -56,7 +56,6 @@ module.exports = function(message, WebSocket) {
     case '376':
     case 'cap':
     case '001': 
-      // WebSocket.client.username = message.params[0];
       break;
     
     // connections set
@@ -147,6 +146,18 @@ module.exports = function(message, WebSocket) {
     case '353':
       break;
 
+    // emited on channel start/stop hosting
+    case 'HOSTTARGET': {
+      const [HostingChannel, channelANDCount] = msg.params;
+      const [hostedChannel, count] = channelANDCount.split(' ');
+      const room = WebSocket.client.channels.get(HostingChannel);
+      if (hostedChannel === '-') {
+        WebSocket.client.emit(Events.HOSTTARGET_STOP, (room, count));
+      } else {
+        WebSocket.client.emit(Events.HOSTTARGET_START, (room, count, hostedChannel));
+      }
+      break;
+    }
     // emited on channel leave
     case 'PART': {
       const roomData = WebSocket.client.channels.get(channel);

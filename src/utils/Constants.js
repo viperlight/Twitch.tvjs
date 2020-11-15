@@ -19,6 +19,8 @@ exports.Events = {
   VIEWER_BAN: 'viewerBan',
   VIEWER_UNBAN: 'viewerUnban',
   VIEWER_TIMEOUT: 'viewerTimeout',
+  HOSTTARGET_START: 'hosting',
+  HOSTTARGET_STOP: 'stopHosting',
 };
 
 exports.Events_Resolvers = {

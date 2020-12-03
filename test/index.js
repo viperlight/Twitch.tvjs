@@ -55,14 +55,14 @@ client.on('raw_message', (data) => {
 
 client.on('chat', async (message) => {
   if (message.self) return;
-  message.channel.deleteMessages(message.id);
+  // message.channel.deleteMessages(message.id);
     // .then(m => console.log(m));
   // message.channel.clear();
-  // message.channel.send({
-  //   content: 'something cool: ',
-  // }).then(m => {
-  //   console.log(m);
-  // });
+  message.channel.send({
+    content: 'something cool: ',
+  }).then(m => {
+    console.log(m);
+  });
   // message.channel.leave();
 });
 

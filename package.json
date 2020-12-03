@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sunday-fun/Twitch.tvjs.git"
+    "url": "git+https://github.com/viperlight/Twitch.tvjs"
   },
   "keywords": [
     "api",
@@ -30,9 +30,9 @@
   "author": "Wilbert-mad",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Sunday-fun/Twitch.tvjs/issues"
+    "url": "https://github.com/viperlight/Twitch.tvjs/issues"
   },
-  "homepage": "https://github.com/Sunday-fun/Twitch.tvjs#readme",
+  "homepage": "https://github.com/viperlight/Twitch.tvjs#readme",
   "devDependencies": {
     "discord.js-docgen": "git+https://github.com/discordjs/docgen.git",
     "eslint": "^7.10.0"

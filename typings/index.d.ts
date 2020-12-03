@@ -92,7 +92,7 @@ declare module 'twitch.tvjs' {
     public id: string;
     public mod: boolean;
     public color?: string;
-    public badges: Object;
+    public badges?: Object;
     public subscriber: boolean;
     public channel?: Channel;
 

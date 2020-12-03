@@ -7,6 +7,7 @@ const Message = require('../../structure/Message');
 const Channel = require('../../structure/Channel');
 const ClientUser = require('../../structure/ClientUser');
 const Viewer = require('../../structure/Viewer');
+const Whisper = require('../../structure/Whisper');
 const NoticeHandlers = require('./NOTICE');
 
 /**
@@ -146,6 +147,23 @@ module.exports = function(message, WebSocket) {
     case '353':
       break;
 
+    case 'WHISPER': {
+      const WhisperViewer = WebSocket.client.viewers.get(message.prefix.split('!')[0]);
+      const WhisperMessage = new Whisper(
+        WebSocket.client, 
+        {
+          author: (
+            WhisperViewer ||
+            message.prefix.split('!')[0]
+          ),
+          content: message.params[1],
+          id: message.tags['message-id'],
+          type: 'whisper'
+        }, false);
+      console.log(WhisperMessage);
+      break;
+    }
+
     // emited on channel start/stop hosting
     case 'HOSTTARGET': {
       const [HostingChannel, channelANDCount] = msg.params;
@@ -197,7 +215,8 @@ module.exports = function(message, WebSocket) {
             channel: message.params[0],
             content: message.params[1],
             id: message.tags.id,
-            author: viewer
+            author: viewer,
+            type: 'cheer',
           })
         );
       // regular chat message
@@ -208,7 +227,8 @@ module.exports = function(message, WebSocket) {
             channel: message.params[0],
             content: message.params[1],
             id: message.tags.id,
-            author: viewer
+            author: viewer,
+            type: 'chat'
           }, false)
         );
       }

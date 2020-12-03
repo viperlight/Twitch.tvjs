@@ -37,13 +37,16 @@ class Viewer {
      * Viewers channel color
      * @type {?string}
      */
-    this.color = typeof data.color == 'string' ? data.color : null;
+    this.color = typeof data.color == 'string' ? data.color : undefined;
 
     /**
      * Viewers chat badges
-     * @type {Object}
+     * @type {?Object}
      */
-    this.badges = Utils.badgesResolver(data.badges);
+    this.badges = 
+      typeof data.badges === 'object' && 
+      !Array.isArray(data.badges) ? 
+      Utils.badgesResolver(data.badges) : undefined;
 
     /**
      * Whether the viewer is a subscriber on this channel
@@ -99,6 +102,15 @@ class Viewer {
         } else reject(msg.error);
       }, 200);
     });
+  }
+
+  /**
+   * Whisper this Viewer a message
+   * @param {string | { content: string }} content - content sent to Viewer 
+   */
+  send(content) {
+    if (typeof content === 'object') content = content.content;
+    
   }
 }
 

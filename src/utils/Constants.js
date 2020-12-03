@@ -21,6 +21,7 @@ exports.Events = {
   VIEWER_TIMEOUT: 'viewerTimeout',
   HOSTTARGET_START: 'hosting',
   HOSTTARGET_STOP: 'stopHosting',
+  WHISPER: 'whisper',
 };
 
 exports.Events_Resolvers = {

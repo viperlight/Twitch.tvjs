@@ -174,5 +174,9 @@ class Channel {
 module.exports = Channel;
 
 /**
- * @typedef {'any' | 'followers' | 'followerWait'} ChatTypes
+ * The type/mode a channel chat is set to
+ * * any - Anyone can chat 
+ * * followers - Only followers can chat
+ * * followerWait - Only followers can chat after the time set
+ * @typedef {string} ChatTypes
  */

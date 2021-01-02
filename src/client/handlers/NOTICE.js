@@ -4,7 +4,7 @@ const { Events, Events_Resolvers, NO_PERMISSION_EMITS } = require('../../utils/C
 
 /**
  * NOTICE Events {@link https://dev.twitch.tv/docs/irc/msg-id}
- * @param {message} message message data
+ * @param {GatewayMessage} message message data
  * @param {string} message_id message id type
  * @param {string} content message content
  * @param {string} channel event channel

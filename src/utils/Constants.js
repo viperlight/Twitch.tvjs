@@ -22,6 +22,7 @@ exports.Events = {
   HOSTTARGET_START: 'hosting',
   HOSTTARGET_STOP: 'stopHosting',
   WHISPER: 'whisper',
+  MESSAGE: 'message',
 };
 
 exports.Events_Resolvers = {

@@ -4,6 +4,12 @@
  * Message emeited structure
  */
 class Message {
+  /**
+   * 
+   * @param {CLient} client - client instance
+   * @param {MessageDataStructures} message - Message data
+   * @param {boolean} self - Whether the message is from client
+   */
   constructor(client, message, self = false) {
     /**
      * Client class
@@ -81,5 +87,17 @@ class Message {
 module.exports = Message;
 
 /**
- * @typedef {'chat' | 'cheer'} messageTypes
+ * The type of message sent
+ * * chat
+ * * cheer
+ * @typedef {string} messageTypes
+ */
+
+ /**
+ * @typedef {object} MessageDataStructures
+ * @property {string} [channel]
+ * @property {string} content
+ * @property {string} [id]
+ * @property {Viewer} [author]
+ * @property {ChatTypes} type
  */

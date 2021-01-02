@@ -12,7 +12,7 @@ const NoticeHandlers = require('./NOTICE');
 
 /**
  * manage message event
- * @param {message} message message data 
+ * @param {GatewayMessage} message message data 
  * @param {ClientWebSocket} WebSocket Client socket inst
  */
 module.exports = function(message, WebSocket) {
@@ -22,6 +22,14 @@ module.exports = function(message, WebSocket) {
   const channel = message.params[0] || null;
   const message_id = message.tags['msg-id'] || null;
   message.tags.channel = channel;
+
+  //! In testing
+  // Emit message for all Message type events
+  ['chat', 'cheer'].forEach((event) => {
+    WebSocket.client.on(event, (...data) => {
+      WebSocket.client.emit(Events.MESSAGE, data);
+    });
+  });
 
   if (message.prefix === null) {
     switch (message.command) {
@@ -151,6 +159,7 @@ module.exports = function(message, WebSocket) {
       const WhisperViewer = WebSocket.client.viewers.get(message.prefix.split('!')[0]);
       const WhisperMessage = new Whisper(
         WebSocket.client, 
+        message.tags,
         {
           author: (
             WhisperViewer ||
@@ -158,9 +167,10 @@ module.exports = function(message, WebSocket) {
           ),
           content: message.params[1],
           id: message.tags['message-id'],
-          type: 'whisper'
-        }, false);
-      console.log(WhisperMessage);
+          type: 'whisper',
+        }, false
+      );
+      WebSocket.client.emit(Events.WHISPER, WhisperMessage);
       break;
     }
 
@@ -245,3 +255,12 @@ module.exports = function(message, WebSocket) {
     }
   }
 };
+
+/**
+ * @typedef {Object} GatewayMessage
+ * @property {string} raw
+ * @property {Object} tags
+ * @property {string} prefix
+ * @property {string} command
+ * @property {string[]} params
+ */ 

@@ -8,4 +8,5 @@ module.exports = {
   Message: require('./structure/Message'),
   Channel: require('./structure/Channel'),
   Viewer: require('./structure/Viewer'),
+  WhisperMessage: require('./structure/Whisper'),
 };

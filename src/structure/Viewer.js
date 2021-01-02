@@ -44,7 +44,7 @@ class Viewer {
      * @type {?Object}
      */
     this.badges = 
-      typeof data.badges === 'object' && 
+      typeof data.badges !== 'object' && 
       !Array.isArray(data.badges) ? 
       Utils.badgesResolver(data.badges) : undefined;
 

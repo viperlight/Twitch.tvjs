@@ -8,6 +8,10 @@ const { Events_Resolvers, Events, ERRORS_MSG } = require('../utils/Constants');
  * A message user structure
  */
 class Viewer {
+  /**
+   * @param {Client} client - client instance
+   * @param {Object} data - viewer data
+   */
   constructor(client, data) {
     /**
      * The client that instantiated this

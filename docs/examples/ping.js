@@ -29,5 +29,5 @@ client.on('chat', (msg) => {
   }
 });
 
-// Login to twith
+// Login to twitch
 client.login('<username>', 'oauth:<password>');

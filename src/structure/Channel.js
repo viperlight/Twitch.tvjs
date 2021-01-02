@@ -9,6 +9,10 @@ const Message = require('./Message');
  * Twitch Chat, Room or Channel
  */
 class Channel {
+  /**
+   * @param {Client} client - client instance
+   * @param {string} channel - channel name
+   */
   constructor(client, channel) {
     /**
      * channel name

@@ -7,7 +7,7 @@ class Whisper extends Message {
    * @param {Client} client - client instance
    * @param {MessageDataStructures} message - Message data
    * @param {object} whisperMessage - whisper data
-   * @param {boolean} self - Whether the message is from client
+   * @param {boolean} [self=false] - Whether the message is from client
    */
   constructor(client, message, whisperMessage, self = false) {
     super(client, message, self);

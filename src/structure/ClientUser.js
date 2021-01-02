@@ -4,6 +4,9 @@
  * Clients global user
  */
 class ClientUser {
+  /**
+   * @param {Object} data - user data
+   */
   constructor(data) {
 
     /**

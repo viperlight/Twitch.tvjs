@@ -5,10 +5,9 @@
  */
 class Message {
   /**
-   * 
    * @param {CLient} client - client instance
    * @param {MessageDataStructures} message - Message data
-   * @param {boolean} self - Whether the message is from client
+   * @param {boolean} [self=false] - Whether the message is from client
    */
   constructor(client, message, self = false) {
     /**

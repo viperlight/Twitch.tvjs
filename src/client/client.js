@@ -7,7 +7,7 @@ const Storage = require('../structure/Storage');
 const ClientWebSocket = require('./websocket/ClientWebSocket');
 
 /**
- * CLient, The Main hub point twitch api
+ * Client, The Main hub point to twitch
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {

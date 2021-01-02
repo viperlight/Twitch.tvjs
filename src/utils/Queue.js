@@ -2,6 +2,7 @@
 
 /**
  * Channel connector queue
+ * @private
  */
 class queue {
   /**
@@ -25,7 +26,7 @@ class queue {
   
   /**
    * playes all the queue
-   * @param {?number} index - 
+   * @param {?number} index - Starts play method
    */
   run(index) {
     index || index === 0 && (this.index = index);
@@ -33,7 +34,7 @@ class queue {
   }
 
   /**
-   * go thro all the queue
+   * go through all the queue
    * @returns {void}
    */
   play() {

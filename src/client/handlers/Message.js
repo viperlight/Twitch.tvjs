@@ -258,9 +258,9 @@ module.exports = function(message, WebSocket) {
 
 /**
  * @typedef {Object} GatewayMessage
- * @property {string} raw
- * @property {Object} tags
- * @property {string} prefix
- * @property {string} command
- * @property {string[]} params
+ * @property {string} raw - Raw GatewayMessage string
+ * @property {Object} tags - Data tags 
+ * @property {string} prefix - GatewayMessage type
+ * @property {string} command - Action command
+ * @property {string[]} params - Extra data
  */ 

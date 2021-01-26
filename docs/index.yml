@@ -1,7 +1,7 @@
 - name: General
   files:
-     -name: Wecome
-      path: wecome.md
+    - name: Welcome
+      path: welcome.md
 - name: Examples
   files:
   - name: Ping

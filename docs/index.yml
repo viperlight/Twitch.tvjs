@@ -4,8 +4,8 @@
       path: welcome.md
 - name: Examples
   files:
-  - name: Ping
-    path: ping.js
+    - name: Ping
+      path: ping.js
 - name: Information
   files:
     - name: login-params

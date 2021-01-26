@@ -1,7 +1,5 @@
-<div>
-  <h1>Twitch.tvjs</h1>
-  <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="NPM info" /></a>
-</div>
+# Twitch.tvjs
+<a href="https://nodei.co/npm/twitch.tvjs/"><img src="https://nodei.co/npm/twitch.tvjs.png?downloads=true&stars=true" alt="NPM info" /></a>
 
 # Welcome!
 

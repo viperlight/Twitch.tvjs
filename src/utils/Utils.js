@@ -183,7 +183,7 @@ class Utils {
    * @param {Client} client - inst of client class
    * @param {string} content - message its self
    * @param {string} channel - message channel name
-   * @returns {Message | Error}
+   * @returns {Message | { error: any }}
    */
   static buildMessage(client, content, channel) {
     if (client.ws.socket == null || client.ws.socket.readyState !== 1) return;
@@ -208,7 +208,7 @@ class Utils {
     return new Message(client, { 
       id: null,
       author: client.user,  
-      channel, content,
+      channel, content, type: 'chat'
     }, true);
   }
 

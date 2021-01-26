@@ -23,7 +23,7 @@ module.exports = function(message, WebSocket) {
   const message_id = message.tags['msg-id'] || null;
   message.tags.channel = channel;
 
-  //! In testing
+  // !In testing
   // Emit message for all Message type events
   ['chat', 'cheer'].forEach((event) => {
     WebSocket.client.on(event, (...data) => {
@@ -84,7 +84,10 @@ module.exports = function(message, WebSocket) {
       }, 60000);
 
       const joinQueue = new Queue(2000);
-      const joinChannels = Utils.union(WebSocket.client.options.channels, WebSocket.client._channels);
+      let joinChannels = [];
+      if (WebSocket.client.options.channels) {
+        joinChannels = Utils.union(WebSocket.client.options.channels, WebSocket.client._channels);
+      }
       WebSocket.client._channels = [];
 
       for (let i = 0; i < joinChannels.length; i++) {
@@ -123,7 +126,7 @@ module.exports = function(message, WebSocket) {
     case 'USERSTATE': {
       const statesChannel = WebSocket.client.channels.get(message.params[0]);
       if (message.tags.mod == '1') {
-        statesChannel.moderators.set(message.tags['display-name'], message.tags);
+        statesChannel.moderators.set(message.tags['display-name'], new Viewer(WebSocket.client, message.tags));
       }
       break;
     }
@@ -176,7 +179,7 @@ module.exports = function(message, WebSocket) {
 
     // emited on channel start/stop hosting
     case 'HOSTTARGET': {
-      const [HostingChannel, channelANDCount] = msg.params;
+      const [HostingChannel, channelANDCount] = message.params;
       const [hostedChannel, count] = channelANDCount.split(' ');
       const room = WebSocket.client.channels.get(HostingChannel);
       if (hostedChannel === '-') {
@@ -207,7 +210,7 @@ module.exports = function(message, WebSocket) {
       const room = WebSocket.client.channels.get(message.params[0]);
       if (WebSocket.client.viewers.has(message.tags['display-name'])) {
         viewer = WebSocket.client.viewers.get(message.tags['display-name']);
-        if (viewer.channel !== room) viewer.channel = room;
+        viewer._patch(message.tags);
       } else {
         viewer = new Viewer(WebSocket.client, message.tags);
         WebSocket.client.viewers.set(viewer.username, viewer);

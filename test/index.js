@@ -1,9 +1,7 @@
 /* eslint-disable no-console */
 const { pass, user, channels } = require('./auth');
 const tvjs = require('../src');
-const client = new tvjs.Client({
-  channels: channels
-});
+const client = new tvjs.Client();
 
 // const testStorage = new tvjs.Storage();
 
@@ -20,6 +18,7 @@ const client = new tvjs.Client({
 
 client.on('ready', () => {
   console.log('Ready');
+  client.joinChannel(channels[0]);
   // for (let i = 0; i < 10; i++) {
   //   console.log(i);
   //   client.channels.get(channels[0]).send(Math.random()).then(m => {
@@ -37,32 +36,37 @@ client.on('ready', () => {
 client.on('warn', console.log);
 // client.on('raw', console.log);
 
-client.on('joinRoom', () => {
+client.on('joinRoom', (ch) => {
+  console.log(ch);
   // console.log(client.channels.find(f => f.name == channels[0]));
   // client.channels.find(f => f.name == channels[0]).leave();
 });
 
-client.on('leaveRoom', (room) => {
-  console.log(room.name);
-  console.log(client.channels);
-});
+// client.on('leaveRoom', (room) => {
+//   console.log(room.name);
+//   console.log(client.channels);
+// });
 
-client.on('raw_message', (data) => {
-  // if (data.command == 'PRIVMSG') {
-    // console.log(data);
-  // }
-});
+// client.on('raw_message', (data) => {
+//   // if (data.command == 'PRIVMSG') {
+//     // console.log(data);
+//   // }
+// });
 
 client.on('chat', async (message) => {
   if (message.self) return;
   // message.channel.deleteMessages(message.id);
-    // .then(m => console.log(m));
+  // .then(m => console.log(m));
   // message.channel.clear();
-  message.channel.send({
-    content: 'something cool: ',
-  }).then(m => {
-    console.log(m);
-  });
+  console.log(message.author);
+  if (message.content == '~clear') {
+    message.channel.clear();
+  }
+  // message.channel.send({
+  //   content: 'something cool: ',
+  // }).then(m => {
+  //   console.log(m);
+  // });
   // message.channel.leave();
 });
 

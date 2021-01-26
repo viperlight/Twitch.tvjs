@@ -17,7 +17,7 @@ class Storage extends Map {
   }
 
   /**
-   * @param {Function} fn -  
+   * @param {Function} fn - The finder function
    * @returns {*}
    */
   find(fn) {

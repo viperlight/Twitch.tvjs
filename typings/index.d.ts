@@ -17,6 +17,8 @@ declare module 'twitch.tvjs' {
     public readyAt?: number;
 
     public login(username: string, password: string): void;
+    public joinChannel(channel: string): void;
+    private _setListenersCount(): void;
 
     on(event: string, listener: Function): this;
     on(event: 'ready' | 'disconnected' | 'connecting', listener: () => void): this;
@@ -75,12 +77,13 @@ declare module 'twitch.tvjs' {
     public socket?: WebSocket;
     public reason?: string;
     public reconnect: boolean;
+    public trys: number;
     public pingTimeout?: NodeJS.Timeout;
 
     public connect(opt: connectionOptions): void;
     public handleOpening(opt: connectionOptions): void;
-    public handleClose(opt: connectionOptions): void;
-    public handleError(opt: connectionOptions): void;
+    public handleClose(event: any, opt: connectionOptions): void;
+    public handleError(event: any, opt: connectionOptions): void;
     public handleMessage(event: MessageEvent<string>): void;
   }
 
@@ -96,6 +99,7 @@ declare module 'twitch.tvjs' {
     public subscriber: boolean;
     public channel?: Channel;
 
+    private _patch(data: GatewayMessage['tags']);
     public ban(reason?: string): Promise<Viewer>;
     public timeout(time?: number): Promise<Viewer>;
   }
@@ -169,7 +173,7 @@ declare module 'twitch.tvjs' {
   }
 
   export class Storage<K, V> extends Map<K, V> {
-    public map(fs: Function): Array<any>;
-    public find(fs: Function): any;
+    public map<T>(fs: (value: V) => T): Array<T>;
+    public find(fn: (value: V) => boolean): V | undefined;
   }
 }

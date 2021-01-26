@@ -20,28 +20,32 @@ class Viewer {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
+     * Viewer id
+     * @type {string}
+     */
+    this.id = data['user-id'];
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    /**
      * Viewer display name
      * @type {string}
      */
     this.username = data['display-name'];
 
     /**
-     * Viewer id
-     * @type {string}
-     */
-    this.id = data['user-id'];
-
-    /**
      * Whether the viewer is mod
      * @type {boolean}
      */
-    this.mod = data.mod == '1';
+    this.mod = data.mod === '1';
 
     /**
      * Viewers channel color
      * @type {?string}
      */
-    this.color = typeof data.color == 'string' ? data.color : undefined;
+    this.color = typeof data.color === 'string' ? data.color : undefined;
 
     /**
      * Viewers chat badges
@@ -50,19 +54,19 @@ class Viewer {
     this.badges = 
       typeof data.badges !== 'object' && 
       !Array.isArray(data.badges) ? 
-      Utils.badgesResolver(data.badges) : undefined;
+        Utils.badgesResolver(data.badges) : undefined;
 
     /**
      * Whether the viewer is a subscriber on this channel
      * @type {boolean}
      */
-    this.subscriber = data.subscriber == '1';
+    this.subscriber = data.subscriber === '1';
 
     /**
      * The channel from where the viewer was reserved
      * @type {?Channel}
      */
-    this.channel = client.channels.get(data.channel);
+    this.channel = this.client.channels.get(data.channel);
   }
 
   /**
@@ -88,7 +92,7 @@ class Viewer {
 
   /**
    * Timeout viewer from channel
-   * @param {number} [time=60000] - timeout time
+   * @param {number} [time=60000] - viwer timeout time in milliseconds
    * @returns {Promise<Viewer>}
    */
   timeout(time = 60000) {
@@ -108,14 +112,13 @@ class Viewer {
     });
   }
 
-  /**
-   * Whisper this Viewer a message
-   * @param {string | { content: string }} content - content sent to Viewer 
-   */
-  send(content) {
-    if (typeof content === 'object') content = content.content;
-    
-  }
+  // /**
+  //  * Whisper the instantiated Viewer of this message
+  //  * @param {string | { content: string }} content - content sent to Viewer
+  //  */
+  // send(content) {
+  //   if (typeof content === 'object') content = content.content;
+  // }
 }
 
 module.exports = Viewer;

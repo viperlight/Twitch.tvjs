@@ -15,6 +15,12 @@ class Channel {
    */
   constructor(client, channel) {
     /**
+     * The client that instantiated this
+     * @type {Client}
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    /**
      * channel name
      * @type {string}
      */
@@ -25,12 +31,6 @@ class Channel {
      * @type {?string}
      */
     this.id = null;
-
-    /**
-     * client instance
-     * @type {Client}
-     */
-    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * Channel moderators
@@ -62,7 +62,7 @@ class Channel {
    * @param {string | { content: string }} content - message content
    * @returns {Promise<Message>}
    * @example 
-   * <channel>.send('ping').catch(console.log);
+   * channel.send('ping').catch(console.log);
    */
   async send(content) {
     return new Promise((resolve, reject) => {
@@ -167,7 +167,7 @@ class Channel {
   /**
    * leaves channel
    * @returns {void}
-   * @example <channel>.leave();
+   * @example channel.leave();
    */
   leave() {
     this.client.ws.send(`PART ${this.name}`);

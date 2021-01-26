@@ -92,11 +92,11 @@ module.exports = Message;
  * @typedef {string} messageTypes
  */
 
- /**
+/**
  * @typedef {object} MessageDataStructures
- * @property {string} [channel]
- * @property {string} content
- * @property {string} [id]
- * @property {Viewer} [author]
- * @property {ChatTypes} type
+ * @property {string} [channel] - Channel's name
+ * @property {string} content - Message's content
+ * @property {string} [id] - Channel's id
+ * @property {Viewer | string} [author] - The viewer or name of the message author
+ * @property {ChatTypes} type - Message type. e.g: 'wisper', 'chat'
  */

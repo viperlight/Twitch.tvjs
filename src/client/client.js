@@ -1,25 +1,25 @@
 'use strict';
 
 const EventEmitter = require('events');
-const { REGEX } = require('../utils/Constants');
+const { REGEX, Events, Events_Resolvers } = require('../utils/Constants');
 const Utils = require('../utils/Utils');
 const Storage = require('../structure/Storage');
 const ClientWebSocket = require('./websocket/ClientWebSocket');
 
 /**
- * Client, The Main hub point to twitch
+ * The Main hub point to twitch
  * @extends {EventEmitter}
  */
 class Client extends EventEmitter {
   /**
-   * Client options
-   * @param {ClientOptions} [options] 
+   * @param {ClientOptions} [options] - Options for the client
    */
   constructor(options = {}) {
     super();
+    this._setListenersCount();
 
     /**
-     * Client options
+     * Options for the client
      * @type {?ClientOptions}
      */
     this.options = options;
@@ -84,15 +84,17 @@ class Client extends EventEmitter {
     this.readyAt = null;
 
     // format all channels
-    this.options.channels.forEach((channel, index, array) => {
-      array[index] = Utils.properChannel(channel);
-    });
+    if (this.options.channels && this.options.channels.length > 0) {
+      this.options.channels.forEach((channel, index, array) => {
+        array[index] = Utils.properChannel(channel);
+      });
+    }
   }
   
   /**
    * Connect to twitch
    * @param {string} username - accounts username
-   * @param {string} password - accounts auth password
+   * @param {string} password - accounts auth token
    * @returns {void}
    */
   login(username, password) {
@@ -103,6 +105,25 @@ class Client extends EventEmitter {
     if (!(REGEX.AUTHFORMAT).test(password))
       throw new Error('PASS_MALFORMATTED');
     this.ws.connect(ops);
+  }
+
+  /**
+   * Client join new channel
+   * @param {string} channel - Name of the channel to join 
+   * @returns {void}
+   */
+  joinChannel(channel) {
+    channel = Utils.properChannel(channel);
+    this.ws.send(`JOIN ${channel}`);
+  }
+
+  /**
+   * Sets the amount of listeners
+   * @private
+   */
+  _setListenersCount() {
+    const _eventsLength = Object.keys(Events).length + Object.keys(Events_Resolvers).length;
+    this.setMaxListeners(_eventsLength);
   }
 }
 

@@ -28,7 +28,7 @@ class ClientWebSocket extends EventEmitter {
     /**
      * @type {boolean}
      */
-    this.reconnect = false;
+    this.reconnect = this.client.reconnect || false;
 
     /**
      * @type {?string}
@@ -39,6 +39,12 @@ class ClientWebSocket extends EventEmitter {
      * @type {?setTimeout}
      */
     this.pingTimeout = null;
+
+    /**
+     * The time the client hase tryed connecting
+     * @type {number}
+     */
+    this.trys = 0;
 
     /**
      * Contains the rate limit queue and metadata
@@ -65,6 +71,7 @@ class ClientWebSocket extends EventEmitter {
    */
   connect(ops) {
     try {
+      this.trys += 1;
       this.socket = new ws(Constants.GATWAY(443));
 
       this.socket.onmessage = this.handleMessage.bind(this);
@@ -85,22 +92,22 @@ class ClientWebSocket extends EventEmitter {
     this.send(`NICK ${user}`);
   } 
 
-  handleClose(ops) {
+  handleClose() {
+    this.client.emit(Events.CLIENT_DISCONNECT);
+  }
+
+  handleError(error, ops) {
+    try {
+      this.socket.close();
+    } catch(e) {}// eslint-disable-line no-empty
     this.client.emit(Events.CLIENT_DISCONNECT);
 
-    if (this.client.reconnect) {
+    if (this.client.reconnect && this.trys < 20) {
       this.client.emit(Events.CLIENT_RECONNECTING);
       setTimeout(() => { this.connect(ops); }, 2000);
     }
-    this.socket = null;
-  }
-
-  handleError(ops) {
-    this.client.emit(Events.CLIENT_DISCONNECT);
-
-    if (this.client.reconnect) {
-      this.client.emit(Events.CLIENT_RECONNECTING);
-      setTimeout(() => { this.connect(ops); }, 2000);
+    if (this.trys > 20) {
+      this.client.emit(Events.ERROR, error);
     }
     this.socket = null;
   }
@@ -114,7 +121,7 @@ class ClientWebSocket extends EventEmitter {
   }
 
   /**
-   * send a server command to server
+   * send a command to the server
    * @param {string} command - server command
    * @param {boolean} important - if this command should be added first in queue
    */
@@ -124,7 +131,7 @@ class ClientWebSocket extends EventEmitter {
   }
 
   /**
-   * send data to gatway server
+   * Send data to twitch websoket server
    * @param {string} command - server command
    * @private
    */
@@ -134,13 +141,13 @@ class ClientWebSocket extends EventEmitter {
   }
 
   /**
-   * Process queue
+   * Process the queue
    * @returns {void}
    * @private
    */
   process() {
     if (this.ratelimit.remaining === 0) return;
-    if (this.ratelimit.queue.length === 0) return
+    if (this.ratelimit.queue.length === 0) return;
     if (this.ratelimit.remaining === this.ratelimit.total) {
       this.ratelimit.timer = setTimeout(() => {
         this.ratelimit.remaining = this.ratelimit.total;

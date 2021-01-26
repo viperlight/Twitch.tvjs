@@ -1,15 +1,14 @@
 # Twitch.tvjs
 
-Interface with the twitch api
+Twitch.tvjs is a powerful node.js module that allows you to interact with the twitch very easily. 
+It is an object-oriented JS librarie, making your code significantly tidier and easier to comprehend.
 
 # Install
 * require [node v12+](https://nodejs.org/)
 
 ```
-npm install twitch.tvjs
+$ npm install twitch.tvjs
 ```
-
-**[Documentation](https://test845a.gitbook.io/twitch-tvjs/)**
 
 # Example usage
 
@@ -25,11 +24,16 @@ client.on('ready', () => {
 
 client.on('chat', (message) => {
   if (message.self) return;
-  if (message.content === 'hello') {
-    message.channel.send('hello there :)');
+  if (message.content === '!ping') {
+    message.reply('!Pong');
   }
 });
 
-client.login('<username>', 'oauth:<password>');
+client.login('<username>', 'oauth:<auth-token>');
 ```
 
+# Links
+
+**[Old Documentation](https://test845a.gitbook.io/twitch-tvjs/)**
+**[Website](https://viperlight.github.io/)** ([Code](https://github.com/viperlight/twitch-docs-website))
+**[repo](https://github.com/viperlight/Twitch.tvjs/)**

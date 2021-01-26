@@ -4,7 +4,7 @@
 const Twitch = require('twitch.tvjs');
 
 // Create an instance of a Twitch client
-// Pass in all channel this client will be in
+// Pass in all channel this client will be joining
 const client = new Twitch.Client({
   channels: ['CHANNEL_NAME'],
 });
@@ -30,4 +30,4 @@ client.on('chat', (msg) => {
 });
 
 // Login to twitch
-client.login('<username>', 'oauth:<password>');
+client.login('<username>', 'oauth:<auth-token>');

@@ -2,3 +2,7 @@
   files:
   - name: Ping
     path: ping.js
+- name: Information
+  files:
+    - name: login-params
+      path: login-params.md

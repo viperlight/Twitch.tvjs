@@ -34,6 +34,6 @@ client.login('<username>', 'oauth:<auth-token>');
 
 # Links
 
-**[Old Documentation](https://test845a.gitbook.io/twitch-tvjs/)**
+**[Documentation v1.0.4](https://test845a.gitbook.io/twitch-tvjs/)**
 **[Website](https://viperlight.github.io/)** ([Code](https://github.com/viperlight/twitch-docs-website))
 **[repo](https://github.com/viperlight/Twitch.tvjs/)**

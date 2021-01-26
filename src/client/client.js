@@ -92,7 +92,7 @@ class Client extends EventEmitter {
   }
   
   /**
-   * Connect to twitch
+   * Connect to twitch with the username and account auth token
    * @param {string} username - accounts username
    * @param {string} password - accounts auth token
    * @returns {void}

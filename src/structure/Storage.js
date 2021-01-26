@@ -5,6 +5,7 @@
  */
 class Storage extends Map {
   /**
+   * Maps this by the function
    * @param {Function} fn - takes object and reterns something
    * @returns {Array}
    */
@@ -17,6 +18,7 @@ class Storage extends Map {
   }
 
   /**
+   * Finds a Value in this and reterns it
    * @param {Function} fn - The finder function
    * @returns {*}
    */

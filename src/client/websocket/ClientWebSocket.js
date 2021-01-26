@@ -14,7 +14,7 @@ class ClientWebSocket extends EventEmitter {
     super();
 
     /**
-     * The client 
+     * The client that instantiated this
      * @type {?Client}
      */
     this.client = client;
@@ -26,17 +26,20 @@ class ClientWebSocket extends EventEmitter {
     this.socket = null;
 
     /**
+     * Whether or not to reconnect the client if gets disconnected 
      * @type {boolean}
      */
     this.reconnect = this.client.reconnect || false;
 
     /**
+     * The reason for the error/disconnect
      * @type {?string}
      */
     this.reason = null;
 
     /**
      * @type {?setTimeout}
+     * @private
      */
     this.pingTimeout = null;
 

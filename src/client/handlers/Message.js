@@ -263,11 +263,6 @@ module.exports = function(message, WebSocket) {
 
       // eslint-disable-next-line no-prototype-builtins
       if (message.tags.hasOwnProperty('bits')) {
-        /**
-         * Emitted when a message has property bits
-         * @event Client#cheer
-         * @param {Message} message - The bits message
-         */
         WebSocket.client.emit(
           Events.CHEER_MEESSAGE, 
           new Message(WebSocket.client, { 
@@ -280,11 +275,6 @@ module.exports = function(message, WebSocket) {
         );
       // regular chat message
       } else {
-        /**
-         * Emitted on a channel/room chat message
-         * @event client#chat
-         * @param {Message} message - The chat message
-         */
         WebSocket.client.emit(
           Events.CHAT_MESSAGE, 
           new Message(WebSocket.client, { 
@@ -318,3 +308,15 @@ module.exports = function(message, WebSocket) {
  * @property {string} command - Action command
  * @property {string[]} params - Extra data
  */ 
+
+/**
+ * Emitted on a channel/room chat message
+ * @event client#chat
+ * @param {Message} message - The chat message
+ */
+
+/**
+ * Emitted when a message has property bits
+ * @event Client#cheer
+ * @param {Message} message - The bits message
+ */

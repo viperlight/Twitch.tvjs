@@ -5,7 +5,7 @@
  */
 class Message {
   /**
-   * @param {CLient} client - client instance
+   * @param {Client} client - client instance
    * @param {MessageDataStructures} message - Message data
    * @param {boolean} [self=false] - Whether the message is from client
    */

@@ -169,6 +169,6 @@ module.exports = ClientWebSocket;
 
 /**
  * @typedef {Object} connectionOptions
- * @property {string} username
- * @property {string} password
+ * @property {string} username - clients inputed username
+ * @property {string} password - twitch inputed oauth token
  */

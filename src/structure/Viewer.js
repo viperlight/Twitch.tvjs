@@ -77,6 +77,11 @@ class Viewer {
   ban(reason) {
     return new Promise((resolve, reject) => {
       if (reason && typeof reason !== 'string') throw new Error(ERRORS_MSG.MUST_BE('reason', 'string'));
+      /**
+       * Emitted when a viewer got ban for a channel/room
+       * @event Client#viewerBan
+       * @param {Viewer} viewer - The viewer that was banned
+       */
       let msg = Utils.buildMessage(this.client, `/ban ${this.username} ${reason}`, this.channel.name);
       this.client.ws.on(Events_Resolvers.VIEWER_BAN_ERROR, (error) => msg = { error });
       this.client.ws.on(Events_Resolvers.VIEWER_BAN_SUCCESS, () => {
@@ -99,6 +104,11 @@ class Viewer {
     return new Promise((resolve, reject) => {
       if (typeof time !== 'number') throw new Error(ERRORS_MSG.MUST_BE('time', 'number in Milliseconds'));
       time = Math.floor((time / (1000))).toString();
+      /**
+       * Emitted when a viewer got timed out
+       * @event Client#viewerTimeout
+       * @param {Viewer} viewer - The viewer that got timed out
+       */
       let msg = Utils.buildMessage(this.client, `/timeout ${this.username} ${time}`, this.channel.name);
       this.client.ws.on(Events_Resolvers.VIEWER_TIMEOUT_ERROR, (error) => msg = { error });
       this.client.ws.on(Events_Resolvers.VIEWER_TIMEOUT_SUCCESS, () => {

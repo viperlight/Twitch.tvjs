@@ -168,6 +168,22 @@ class ClientWebSocket extends EventEmitter {
 module.exports = ClientWebSocket;
 
 /**
+ * Emitted on raw gateway message
+ * @event Client#raw
+ * @param {string} info - The gateway string data
+ */
+
+/**
+ * Emitted on the clients disconnect
+ * @event Client#disconnected
+ */
+
+/**
+ * Emitted when the client is connecting
+ * @event Client#connecting
+ */
+
+/**
  * @typedef {Object} connectionOptions
  * @property {string} username - clients inputed username
  * @property {string} password - twitch inputed oauth token

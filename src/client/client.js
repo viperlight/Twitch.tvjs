@@ -55,6 +55,7 @@ class Client extends EventEmitter {
     this.user = null;
 
     /**
+     * websocket gatway connector
      * @type {ClientWebSocket}
      */
     this.ws = new ClientWebSocket(this);
@@ -128,6 +129,12 @@ class Client extends EventEmitter {
 }
 
 module.exports = Client;
+
+/**
+ * Emitted on some error
+ * @event Client#error
+ * @param {*} error - the error that occurred
+ */
 
 /**
  * @typedef {Object} ClientOptions

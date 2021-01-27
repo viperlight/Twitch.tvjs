@@ -94,6 +94,11 @@ class Channel {
   unban(username) {
     return new Promise((resolve, reject) => {
       if (typeof username !== 'string') throw new Error(ERRORS_MSG.MUST_BE('username', 'string'));
+      /**
+       * Emitted when a viewer of a channel/room got unbanned
+       * @event Client#viewerUnban
+       * @param {Channel} - The channel the viewer was unbanned from 
+       */
       let message = Utils.buildMessage(this.client, `/unban ${Utils.properUsername(username)}`, this.name);
       this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_ERROR, (error) => message = { error });
       this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_SUCCESS, () => {

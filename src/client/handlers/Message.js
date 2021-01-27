@@ -17,6 +17,12 @@ const NoticeHandlers = require('./NOTICE');
  */
 module.exports = function(message, WebSocket) {
   if (message === null) return;
+
+  /**
+   * Emitted after raw evnts has been parsed
+   * @event Client#raw_message
+   * @param {GatewayMessage} message - parsed gatway message
+   */
   WebSocket.client.emit(Events.RAW_MESSAGE, message);
 
   const channel = message.params[0] || null;
@@ -119,6 +125,11 @@ module.exports = function(message, WebSocket) {
       WebSocket.client.user = user;
       WebSocket.client.readyAt = Date.now();
       WebSocket.client.ready = true;
+
+      /**
+       * Emitted When the clients global user is resived
+       * @event Client#ready
+       */
       WebSocket.client.emit(Events.CLIENT_READY);
       break;
     }
@@ -143,6 +154,12 @@ module.exports = function(message, WebSocket) {
       room.subs = message.tags['subs-only'] == '1';
       room.r9k = message.tags.r9k == '1';
       room.id = message.tags['room-id'];
+
+      /**
+       * Emitted when the client joins a chnnel/room
+       * @event Client#joinRoom
+       * @param {Channel} room - The instinc of that joined channel/room
+       */
       WebSocket.client.emit(Events.CLIENT_ROOMJOIN, room);
       break;
     }
@@ -173,6 +190,12 @@ module.exports = function(message, WebSocket) {
           type: 'whisper',
         }, false
       );
+
+      /**
+       * Emitted when the client resives a whisper message
+       * @event Client#whisper
+       * @param {Whisper} message - That Whisper message
+       */
       WebSocket.client.emit(Events.WHISPER, WhisperMessage);
       break;
     }
@@ -183,8 +206,21 @@ module.exports = function(message, WebSocket) {
       const [hostedChannel, count] = channelANDCount.split(' ');
       const room = WebSocket.client.channels.get(HostingChannel);
       if (hostedChannel === '-') {
+        /**
+         * Emitted when a channel stops hosting
+         * @event Client#stopHosting
+         * @param {Channel} room - The channel that has stoped hosting
+         * @param {number} count - The count of viewers
+         */
         WebSocket.client.emit(Events.HOSTTARGET_STOP, (room, count));
       } else {
+        /**
+         * Emitted when a channel starts hosting
+         * @event Client#hosting
+         * @param {Channel} room - The channel that has started hosting
+         * @param {number} count - The count of viewers
+         * @param {string} hostedChannel - Name of the channel hosted
+         */
         WebSocket.client.emit(Events.HOSTTARGET_START, (room, count, hostedChannel));
       }
       break;
@@ -192,6 +228,11 @@ module.exports = function(message, WebSocket) {
     // emited on channel leave
     case 'PART': {
       const roomData = WebSocket.client.channels.get(channel);
+      /**
+       * Emitted when the client leaves a channel/room
+       * @event Client#leaveRoom
+       * @param {Channel} room - The channel/room that the client has left
+       */
       WebSocket.client.emit(Events.CLIENT_ROOMLEAVE, roomData);
       WebSocket.client.channels.delete(channel);
       break;
@@ -222,6 +263,11 @@ module.exports = function(message, WebSocket) {
 
       // eslint-disable-next-line no-prototype-builtins
       if (message.tags.hasOwnProperty('bits')) {
+        /**
+         * Emitted when a message has property bits
+         * @event Client#cheer
+         * @param {Message} message - The bits message
+         */
         WebSocket.client.emit(
           Events.CHEER_MEESSAGE, 
           new Message(WebSocket.client, { 
@@ -234,6 +280,11 @@ module.exports = function(message, WebSocket) {
         );
       // regular chat message
       } else {
+        /**
+         * Emitted on a channel/room chat message
+         * @event client#chat
+         * @param {Message} message - The chat message
+         */
         WebSocket.client.emit(
           Events.CHAT_MESSAGE, 
           new Message(WebSocket.client, { 

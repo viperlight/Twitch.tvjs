@@ -44,7 +44,7 @@ class ClientWebSocket extends EventEmitter {
     this.pingTimeout = null;
 
     /**
-     * The time the client hase tryed connecting
+     * The number of times the client has tryed connecting
      * @type {number}
      */
     this.trys = 0;
@@ -112,7 +112,6 @@ class ClientWebSocket extends EventEmitter {
     if (this.trys > 20) {
       this.client.emit(Events.ERROR, error);
     }
-    this.socket = null;
   }
 
   handleMessage(event) {
@@ -167,3 +166,9 @@ class ClientWebSocket extends EventEmitter {
 }
 
 module.exports = ClientWebSocket;
+
+/**
+ * @typedef {Object} connectionOptions
+ * @property {string} username
+ * @property {string} password
+ */

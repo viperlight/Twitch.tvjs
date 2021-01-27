@@ -97,7 +97,7 @@ class Channel {
       /**
        * Emitted when a viewer of a channel/room got unbanned
        * @event Client#viewerUnban
-       * @param {Channel} - The channel the viewer was unbanned from 
+       * @param {Channel} channel - The channel the viewer was unbanned from 
        */
       let message = Utils.buildMessage(this.client, `/unban ${Utils.properUsername(username)}`, this.name);
       this.client.ws.on(Events_Resolvers.VIEWER_UNBAN_ERROR, (error) => message = { error });

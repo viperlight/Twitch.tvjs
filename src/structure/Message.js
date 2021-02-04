@@ -18,7 +18,7 @@ class Message {
 
     /**
      * message Viewer data
-     * @type {Viewer}
+     * @type {Viewer | string}
      */
     this.author = message.author;
 
@@ -60,7 +60,7 @@ class Message {
    */
   async reply(content) {
     if (typeof content === 'object') content = content.content;
-    await this.channel.send(`@${this.author.username}, ${content}`);
+    await this.channel.send(`@${typeof this.author === 'string' ? this.author : (this.author.username || '')}, ${content}`);
   }
   
   // /**
@@ -94,9 +94,9 @@ module.exports = Message;
 
 /**
  * @typedef {object} MessageDataStructures
- * @property {string} [channel] - Channel's name
+ * @property {string} [channel] - Message channel's name
  * @property {string} content - Message's content
- * @property {string} [id] - Channel's id
+ * @property {string} [id] - Message channel's id
  * @property {Viewer | string} [author] - The viewer or name of the message author
  * @property {ChatTypes} type - Message type. e.g: 'wisper', 'chat'
  */

@@ -1,9 +1,12 @@
 const Message = require('./Message');
 const Utils = require('../utils/Utils');
 
+/**
+ * Whisper Message structure
+ * @extends {Message}
+ */
 class Whisper extends Message {
-  /**
-   * Whisper Message structure
+  /** 
    * @param {Client} client - client instance
    * @param {MessageDataStructures} message - Message data
    * @param {Object} whisperMessage - whisper data

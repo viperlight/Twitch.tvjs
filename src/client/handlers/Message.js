@@ -33,7 +33,7 @@ module.exports = function(message, WebSocket) {
   // Emit message for all Message type events
   ['chat', 'cheer'].forEach((event) => {
     WebSocket.client.on(event, (...data) => {
-      WebSocket.client.emit(Events.MESSAGE, data);
+      WebSocket.client.emit(Events.MESSAGE, ...data);
     });
   });
 
@@ -311,7 +311,7 @@ module.exports = function(message, WebSocket) {
 
 /**
  * Emitted on a channel/room chat message
- * @event client#chat
+ * @event Client#chat
  * @param {Message} message - The chat message
  */
 
@@ -319,4 +319,10 @@ module.exports = function(message, WebSocket) {
  * Emitted when a message has property bits
  * @event Client#cheer
  * @param {Message} message - The bits message
+ */
+
+/**
+ * Emitted on chat or whisper 
+ * @event Client#message
+ * @param {Message | Whisper} message - Message reseved
  */

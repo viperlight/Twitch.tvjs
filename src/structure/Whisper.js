@@ -34,6 +34,15 @@ class Whisper extends Message {
     this.user_badges =
       typeof whisperMessage.badges === 'string' ? Utils.badgesResolver(whisperMessage.badges) : undefined;
   }
+
+  /**
+   * Replay to a whisper message
+   * @param {string | { content: string }} content - content beeing sent
+   */
+  reply(content) {
+    if (typeof content === 'object') content = content.content;
+    this.client.ws.send(`PRIVMSG #twitchjs:/w ${typeof this.author === 'string' ? this.author : this.author.username} ${content}`);
+  }
 }
 
 module.exports = Whisper;

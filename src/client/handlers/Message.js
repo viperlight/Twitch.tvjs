@@ -12,7 +12,7 @@ const NoticeHandlers = require('./NOTICE');
 
 /**
  * manage message event
- * @param {GatewayMessage} message message data 
+ * @param {GatewayMessage} message message data
  * @param {ClientWebSocket} WebSocket Client socket inst
  */
 module.exports = function(message, WebSocket) {
@@ -31,7 +31,7 @@ module.exports = function(message, WebSocket) {
 
   // !In testing
   // Emit message for all Message type events
-  ['chat', 'cheer'].forEach((event) => {
+  ['chat', 'cheer'].forEach(event => {
     WebSocket.client.on(event, (...data) => {
       WebSocket.client.emit(Events.MESSAGE, ...data);
     });
@@ -41,9 +41,7 @@ module.exports = function(message, WebSocket) {
     switch (message.command) {
     case 'PONG': {
       const currDate = new Date();
-      WebSocket.client.currentLatency = (
-        currDate.getTime() - WebSocket.client.latency.getTime()
-      ) / 1000;
+      WebSocket.client.currentLatency = (currDate.getTime() - WebSocket.client.latency.getTime()) / 1000;
 
       clearTimeout(WebSocket.pingTimeout);
       break;
@@ -51,13 +49,13 @@ module.exports = function(message, WebSocket) {
     // send back in im still here response
     case 'PING': {
       if (WebSocket.socket !== null && WebSocket.socket.readyState === 1)
-        // send back a respons and marked as important
+      // send back a respons and marked as important
         WebSocket.send('PONG', true);
       break;
     }
     default:
       WebSocket.client.emit(
-        Events.ERROR, 
+        Events.ERROR,
         `Could not parse message with no prefix:\n${JSON.stringify(message, null, 4)}`
       );
       break;
@@ -70,14 +68,13 @@ module.exports = function(message, WebSocket) {
     case '375':
     case '376':
     case 'cap':
-    case '001': 
+    case '001':
       break;
-    
-    // connections set
+
+      // connections set
     case '372': {
       WebSocket.sendLoop = setInterval(() => {
-        if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) 
-          WebSocket.send('PING');
+        if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) WebSocket.send('PING');
 
         WebSocket.client.latency = new Date();
         WebSocket.pingTimeout = setTimeout(() => {
@@ -101,8 +98,7 @@ module.exports = function(message, WebSocket) {
         joinQueue.add(async () => {
           if (WebSocket.socket !== null && WebSocket.socket.readyState === 1) {
             WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
-            if (!channel || typeof channel !== 'string') 
-              throw new Error('INVALID_CHANNEL_TYPE');
+            if (!channel || typeof channel !== 'string') throw new Error('INVALID_CHANNEL_TYPE');
             // excute a join command for channel
             await WebSocket.send(`JOIN ${channel}`);
           }
@@ -115,7 +111,7 @@ module.exports = function(message, WebSocket) {
 
     // notice actions
     case 'NOTICE': {
-      NoticeHandlers(message, message_id, (message.params[1] || null), channel, WebSocket);
+      NoticeHandlers(message, message_id, message.params[1] || null, channel, WebSocket);
       break;
     }
     // global user information
@@ -156,14 +152,14 @@ module.exports = function(message, WebSocket) {
       room.id = message.tags['room-id'];
 
       /**
-       * Emitted when the client joins a chnnel/room
-       * @event Client#joinRoom
-       * @param {Channel} room - The instinc of that joined channel/room
-       */
+         * Emitted when the client joins a chnnel/room
+         * @event Client#joinRoom
+         * @param {Channel} room - The instinc of that joined channel/room
+         */
       WebSocket.client.emit(Events.CLIENT_ROOMJOIN, room);
       break;
     }
-    
+
     default:
       break;
     }
@@ -178,24 +174,22 @@ module.exports = function(message, WebSocket) {
     case 'WHISPER': {
       const WhisperViewer = WebSocket.client.viewers.get(message.prefix.split('!')[0]);
       const WhisperMessage = new Whisper(
-        WebSocket.client, 
-        message.tags,
+        WebSocket.client,
         {
-          author: (
-            WhisperViewer ||
-            message.prefix.split('!')[0]
-          ),
+          author: WhisperViewer || message.prefix.split('!')[0],
           content: message.params[1],
           id: message.tags['message-id'],
           type: 'whisper',
-        }, false
+        },
+        message.tags,
+        false
       );
 
       /**
-       * Emitted when the client resives a whisper message
-       * @event Client#whisper
-       * @param {Whisper} message - That Whisper message
-       */
+         * Emitted when the client resives a whisper message
+         * @event Client#whisper
+         * @param {Whisper} message - That Whisper message
+         */
       WebSocket.client.emit(Events.WHISPER, WhisperMessage);
       break;
     }
@@ -207,11 +201,11 @@ module.exports = function(message, WebSocket) {
       const room = WebSocket.client.channels.get(HostingChannel);
       if (hostedChannel === '-') {
         /**
-         * Emitted when a channel stops hosting
-         * @event Client#stopHosting
-         * @param {Channel} room - The channel that has stoped hosting
-         * @param {number} count - The count of viewers
-         */
+           * Emitted when a channel stops hosting
+           * @event Client#stopHosting
+           * @param {Channel} room - The channel that has stoped hosting
+           * @param {number} count - The count of viewers
+           */
         WebSocket.client.emit(Events.HOSTTARGET_STOP, (room, count));
       } else {
         /**
@@ -240,11 +234,11 @@ module.exports = function(message, WebSocket) {
 
     // emited on join
     case 'JOIN': {
-      if (!WebSocket.client.channels.has(Utils.properChannel(channel))) 
+      if (!WebSocket.client.channels.has(Utils.properChannel(channel)))
         WebSocket.client.channels.set(Utils.properChannel(channel), new Channel(WebSocket.client, channel));
       break;
     }
-    
+
     // should be reseved on channel message
     case 'PRIVMSG': {
       let viewer;
@@ -264,8 +258,8 @@ module.exports = function(message, WebSocket) {
       // eslint-disable-next-line no-prototype-builtins
       if (message.tags.hasOwnProperty('bits')) {
         WebSocket.client.emit(
-          Events.CHEER_MEESSAGE, 
-          new Message(WebSocket.client, { 
+          Events.CHEER_MEESSAGE,
+          new Message(WebSocket.client, {
             channel: message.params[0],
             content: message.params[1],
             id: message.tags.id,
@@ -273,27 +267,28 @@ module.exports = function(message, WebSocket) {
             type: 'cheer',
           })
         );
-      // regular chat message
+        // regular chat message
       } else {
         WebSocket.client.emit(
-          Events.CHAT_MESSAGE, 
-          new Message(WebSocket.client, { 
-            channel: message.params[0],
-            content: message.params[1],
-            id: message.tags.id,
-            author: viewer,
-            type: 'chat'
-          }, false)
+          Events.CHAT_MESSAGE,
+          new Message(
+            WebSocket.client,
+            {
+              channel: message.params[0],
+              content: message.params[1],
+              id: message.tags.id,
+              author: viewer,
+              type: 'chat',
+            },
+            false
+          )
         );
       }
       break;
     }
 
     default: {
-      WebSocket.client.emit(
-        Events.ERROR, 
-        `Could not parse message:\n${JSON.stringify(message, null, 4)}`
-      );
+      WebSocket.client.emit(Events.ERROR, `Could not parse message:\n${JSON.stringify(message, null, 4)}`);
       break;
     }
     }
@@ -303,11 +298,11 @@ module.exports = function(message, WebSocket) {
 /**
  * @typedef {Object} GatewayMessage
  * @property {string} raw - Raw GatewayMessage string
- * @property {Object} tags - Data tags 
+ * @property {Object} tags - Data tags
  * @property {string} prefix - GatewayMessage type
  * @property {string} command - Action command
  * @property {string[]} params - Extra data
- */ 
+ */
 
 /**
  * Emitted on a channel/room chat message
@@ -322,7 +317,7 @@ module.exports = function(message, WebSocket) {
  */
 
 /**
- * Emitted on chat or whisper 
+ * Emitted on chat or whisper
  * @event Client#message
  * @param {Message | Whisper} message - Message reseved
  */

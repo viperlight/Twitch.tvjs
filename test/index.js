@@ -36,10 +36,14 @@ client.on('ready', () => {
 client.on('warn', console.log);
 // client.on('raw', console.log);
 
-client.on('joinRoom', (ch) => {
+client.on('joinRoom', ch => {
   console.log(ch);
   // console.log(client.channels.find(f => f.name == channels[0]));
   // client.channels.find(f => f.name == channels[0]).leave();
+});
+
+client.on('whisper', msg => {
+  msg.reply('hello!');
 });
 
 // client.on('leaveRoom', (room) => {
@@ -53,7 +57,7 @@ client.on('joinRoom', (ch) => {
 //   // }
 // });
 
-client.on('chat', async (message) => {
+client.on('chat', async message => {
   if (message.self) return;
   // message.channel.deleteMessages(message.id);
   // .then(m => console.log(m));
@@ -61,6 +65,14 @@ client.on('chat', async (message) => {
   console.log(message.author);
   if (message.content == '~clear') {
     message.channel.clear();
+  } else if (message.content === 'test') {
+    message.channel
+      .send({
+        content: 'something cool: ',
+      })
+      .then(m => {
+        console.log(m);
+      });
   }
   // message.channel.send({
   //   content: 'something cool: ',

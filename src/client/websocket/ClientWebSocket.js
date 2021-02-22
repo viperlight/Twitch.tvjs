@@ -26,7 +26,7 @@ class ClientWebSocket extends EventEmitter {
     this.socket = null;
 
     /**
-     * Whether or not to reconnect the client if gets disconnected 
+     * Whether or not to reconnect the client if gets disconnected
      * @type {boolean}
      */
     this.reconnect = this.client.reconnect || false;
@@ -88,12 +88,12 @@ class ClientWebSocket extends EventEmitter {
 
   handleOpening(ops) {
     if (this.socket == null || this.socket.readyState !== 1) return;
-    const user = ops.username || `justinfan${Math.floor((Math.random()*80000)+1000)}`;
+    const user = ops.username || `justinfan${Math.floor(Math.random() * 80000 + 1000)}`;
     this.send('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership');
     // identify client
     this.send(`PASS ${ops.password}`);
     this.send(`NICK ${user}`);
-  } 
+  }
 
   handleClose() {
     this.client.emit(Events.CLIENT_DISCONNECT);
@@ -102,12 +102,12 @@ class ClientWebSocket extends EventEmitter {
   handleError(error, ops) {
     try {
       this.socket.close();
-    } catch(e) {}// eslint-disable-line no-empty
+    } catch (e) {} // eslint-disable-line no-empty
     this.client.emit(Events.CLIENT_DISCONNECT);
 
     if (this.client.reconnect && this.trys < 20) {
       this.client.emit(Events.CLIENT_RECONNECTING);
-      setTimeout(() => { this.connect(ops); }, 2000);
+      setTimeout(() => this.connect(ops), 2000);
     }
     if (this.trys > 20) {
       this.client.emit(Events.ERROR, error);

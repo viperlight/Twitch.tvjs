@@ -1,6 +1,7 @@
 'use strict';
 
 const Message = require('../structure/Message');
+const Whisper = require('../structure/Whisper');
 const { Events_Resolvers } = require('./Constants');
 
 class Utils {
@@ -11,7 +12,7 @@ class Utils {
   /**
    * <info>Copyright (c) 2013-2015, Fionn Kelleher All rights reserved.
    * @license {BSD-2-Clause} {@link https://github.com/sigkell/irc-message/blob/master/index.js}</info>
-   * @param {string} data Mesasge string data 
+   * @param {string} data Mesasge string data
    * @returns {message}
    */
   static unpack(data) {
@@ -20,7 +21,7 @@ class Utils {
       tags: {},
       prefix: null,
       command: null,
-      params: []
+      params: [],
     };
 
     // position and nextspace are used by the parser as a reference.
@@ -137,12 +138,11 @@ class Utils {
         break;
       }
     }
-    
+
     return message;
   }
 
   /**
-   * 
    * @param {string} str channel name
    * @returns {string}
    */
@@ -152,7 +152,6 @@ class Utils {
   }
 
   /**
-   * 
    * @param {string} str channel name
    * @returns {string}
    */
@@ -162,11 +161,11 @@ class Utils {
   }
 
   static union(k, f) {
-    return [ ...new Set([ ...k, ...f ]) ];
+    return [...new Set([...k, ...f])];
   }
 
   static wait(time) {
-    return new Promise((resolve) => setTimeout((resolve), time));
+    return new Promise(resolve => setTimeout(resolve, time));
   }
 
   /**
@@ -187,29 +186,78 @@ class Utils {
    */
   static buildMessage(client, content, channel) {
     if (client.ws.socket == null || client.ws.socket.readyState !== 1) return;
-      
+
     if (content.length >= 500) {
       const msg = this.splitLine(content, 500);
       content = msg[0];
-    
+
       setTimeout(() => {
         this.buildMessage(client, msg[1], channel);
       }, 350);
     }
 
     client.ws.send(`PRIVMSG ${channel} :${content}`);
-    client.ws.on(Events_Resolvers.MESSAGE_DUPLICATE_ERROR, (error) => {
+    client.ws.on(Events_Resolvers.MESSAGE_DUPLICATE_ERROR, error => {
       return {
         boolean: false,
         error,
       };
     });
-    
-    return new Message(client, { 
-      id: null,
-      author: client.user,  
-      channel, content, type: 'chat'
-    }, true);
+
+    return new Message(
+      client,
+      {
+        id: null,
+        author: client.user,
+        channel,
+        content,
+        type: 'chat',
+      },
+      true
+    );
+  }
+
+  /**
+   * send a whisper message for twitch
+   * @param {Client} client - inst of client class
+   * @param {string} content - message its self
+   * @param {string} channel - message channel name
+   * @returns {Message | { error: any }}
+   */
+  static buildWMessage(client, content, channel) {
+    if (client.ws.socket == null || client.ws.socket.readyState !== 1) return { error: 'NOT_CONNECTED' };
+
+    if (content.length >= 500) {
+      const msg = this.splitLine(content, 500);
+      content = msg[0];
+
+      setTimeout(() => {
+        this.buildWMessage(client, msg[1], channel);
+      }, 350);
+    }
+
+    client.ws.send(`PRIVMSG ${channel} :${content}`);
+    client.ws.on(Events_Resolvers.MESSAGE_DUPLICATE_ERROR, error => {
+      return {
+        boolean: false,
+        error,
+      };
+    });
+
+    return new Whisper(
+      client,
+      {
+        id: null,
+        author: client.user,
+        channel,
+        content,
+        type: 'whisper',
+      },
+      {
+        user_id: client.user ? client.user.id : undefined,
+      },
+      true
+    );
   }
 
   /**
